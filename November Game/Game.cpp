@@ -59,7 +59,9 @@ void Game::draw()
 {
 	window.setView(mainView);
 	window.clear();
+
 	states.back()->draw(this);
+
 	window.display();
 }
 
@@ -77,7 +79,7 @@ void Game::init()
 {
 
 
-	window.create(sf::VideoMode(800, 600), "Entity component system", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
+	window.create(sf::VideoMode(800, 600), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
 	mainView.setSize(800, 600);
 	mainView.setCenter(400, 300);

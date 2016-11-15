@@ -31,9 +31,10 @@ void PlayState::handleEvents(Game * game)
 
 void PlayState::update(Game * game)
 {
-	game->updateSystem.update(&game->entities, game->mainView);
 	game->collisionSystem.init(&game->entities);
 	game->collisionSystem.checkCollisions(&game->entities);
+	game->updateSystem.update(&game->entities, game->mainView);
+
 }
 
 void PlayState::draw(Game * game)
