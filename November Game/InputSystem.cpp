@@ -10,6 +10,7 @@ void InputSystem::handleInput(std::vector<Entity> *entities)
 			if (playerComponent && moveComponent)
 			{
 				playerEntity = &entity;
+				break;
 			}
 
 		}
@@ -24,7 +25,7 @@ void InputSystem::handleInput(std::vector<Entity> *entities)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		{
 			if (moveComponent->mVelocity.y >= -5)
-				moveComponent->mVelocity.y -= 0.5f;
+				moveComponent->mVelocity.y -= playerComponent->mSpeed;
 		}
 		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))

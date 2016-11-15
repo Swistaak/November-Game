@@ -9,6 +9,4 @@ public:
 private:
 	Entity *playerEntity{ nullptr };
 };
-
-
 #endif

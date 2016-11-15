@@ -11,7 +11,4 @@ public:
 	}
 	bool mPhysic{ true };
 };
-
-
-
 #endif

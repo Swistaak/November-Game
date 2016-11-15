@@ -1,6 +1,6 @@
 #include "RenderSystem.h"
 
-void RenderSystem::draw(sf::RenderWindow &window,std::vector<Entity> *entities )
+void RenderSystem::drawEntities(sf::RenderWindow &window,std::vector<Entity> *entities )
 {
 	for (auto &entity : *entities)
 	{
@@ -8,7 +8,6 @@ void RenderSystem::draw(sf::RenderWindow &window,std::vector<Entity> *entities )
 		if (spriteComponent)
 			window.draw(spriteComponent->mSprite);
 	}
-	drawGrid(window);
 
 }
 

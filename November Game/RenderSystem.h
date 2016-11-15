@@ -5,7 +5,7 @@
 class RenderSystem
 {
 public:
-	void draw(sf::RenderWindow &window, std::vector<Entity> *entities);
+	void drawEntities(sf::RenderWindow &window, std::vector<Entity> *entities);
 	void drawGrid(sf::RenderWindow &window);
 };
 

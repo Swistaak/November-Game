@@ -1,5 +1,3 @@
-#ifndef GAME_H
-#define GAME_H
 
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
@@ -10,6 +8,7 @@
 #include "TextureManager.h"
 #include "EntityFactory.h"
 #include "GameState.h"
+#include "PlayState.h"
 #include <iostream>
 #include <vector>
 class Game
@@ -25,7 +24,12 @@ public:
 	void pushState(GameState* state);
 	void popState();
 
-
+	RenderSystem renderSystem;
+	UpdateSystem updateSystem;
+	InputSystem inputSystem;
+	EntityFactory entityFactory;
+	CollisionSystem collisionSystem;
+	sf::View mainView;
 private:
 
 	void update();
@@ -33,15 +37,10 @@ private:
 	void handleEvents();
 	void init();
 
-	RenderSystem renderSystem;
-	UpdateSystem updateSystem;
-	InputSystem inputSystem;
-	EntityFactory entityFactory;
-	CollisionSystem collisionSystem;
+
 
 	std::vector<GameState*> states;
-	sf::View mainView;
+
 	sf::Event event;
 
 };
-#endif
