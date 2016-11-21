@@ -2,6 +2,7 @@
 #define UPDATE_SYSTEM_H
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
+#include "TileMap.h"
 #include <iostream>
 class UpdateSystem
 {

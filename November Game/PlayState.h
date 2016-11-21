@@ -1,6 +1,7 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 #include "GameState.h"
+#include "TileMap.h"
 class PlayState : public GameState
 {
 public:

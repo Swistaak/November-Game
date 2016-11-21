@@ -1,6 +1,6 @@
 #include "InputSystem.h"
 
-void InputSystem::handleInput(std::vector<Entity> *entities)
+void InputSystem::handleKeyboard(std::vector<Entity> *entities)
 {
 	if (playerEntity == nullptr)
 		for (auto &entity : *entities)
@@ -34,4 +34,13 @@ void InputSystem::handleInput(std::vector<Entity> *entities)
 	}
 
 
+}
+
+void InputSystem::handleMouse(sf::RenderWindow & window)
+{
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window)); 
+		tileMap->setTileType(pos, 1);
+	}
 }

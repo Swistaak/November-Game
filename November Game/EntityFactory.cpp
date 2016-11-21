@@ -29,7 +29,7 @@ Entity * EntityFactory::createObject(sf::FloatRect transform, std::string textur
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
 	CollisionComponent *collision = new CollisionComponent(true);
 
-	//tempEntity->addComponent(move);
+	tempEntity->addComponent(move);
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
 	tempEntity->addComponent(collision);

@@ -2,10 +2,12 @@
 #define INPUT_SYSTEM_H
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
+#include "TileMap.h"
 class InputSystem
 {
 public:
-	void handleInput(std::vector<Entity> *entities);
+	void handleKeyboard(std::vector<Entity> *entities);
+	void handleMouse(sf::RenderWindow &window);
 private:
 	Entity *playerEntity{ nullptr };
 };

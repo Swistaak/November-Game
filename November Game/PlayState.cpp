@@ -3,11 +3,12 @@
 PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
-	Entity *player = game->entityFactory.createPlayer(sf::FloatRect(0.0f, 0.0f, 64.0f, 64.0f), "test.bmp", 3);
+	tileMap = new TileMap("tiles_spritesheet.xml");
+	Entity *player = game->entityFactory.createPlayer(sf::FloatRect(50.0f, 50.0f, 21.0f, 22.0f), "test.bmp", 3);
 	game->entities.push_back(*player);
-	for (int i = 0; i < 6; i++)
+	for (float i = 0; i < 6; i++)
 	{
-		Entity *entity = game->entityFactory.createObject(sf::FloatRect((100 * i), (350), 64.0f, 64.0f), "test.bmp");
+		Entity *entity = game->entityFactory.createObject(sf::FloatRect((100.0f * i), (350), 21.0f, 22.0f), "test.bmp");
 		game->entities.push_back(*entity);
 	}
 }
@@ -26,7 +27,8 @@ void PlayState::resume()
 
 void PlayState::handleEvents(Game * game)
 {
-	game->inputSystem.handleInput(&game->entities);
+	game->inputSystem.handleKeyboard(&game->entities);
+	game->inputSystem.handleMouse(game->window);
 }
 
 void PlayState::update(Game * game)
@@ -39,6 +41,7 @@ void PlayState::update(Game * game)
 
 void PlayState::draw(Game * game)
 {
+	tileMap->draw(game->window);
 	game->renderSystem.drawGrid(game->window);
 	game->renderSystem.drawEntities(game->window, &game->entities);
 }
