@@ -50,6 +50,18 @@ void Game::popState()
 	
 }
 
+void Game::collectGarbage()
+{
+	for (int i = 0; i < entities.size(); i++)
+	{
+		if (entities[i].getDeleted())
+		{
+			entities[i] = std::move(entities.back());
+			entities.pop_back();
+		}
+	}
+}
+
 void Game::update()
 {
 	states.back()->update(this);

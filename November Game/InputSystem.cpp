@@ -1,46 +1,68 @@
 #include "InputSystem.h"
 
-void InputSystem::handleKeyboard(std::vector<Entity> *entities)
+void InputSystem::handleKeyboard(sf::RenderWindow &window,std::vector<Entity> *entities)
 {
-	if (playerEntity == nullptr)
-		for (auto &entity : *entities)
+	if (playerEntity == -1)
+		for (int i=0; i<entities->size(); i++)
 		{
-			PlayerComponent *playerComponent = entity.getComponent<PlayerComponent>();
-			MoveComponent *moveComponent = entity.getComponent<MoveComponent>();
+			PlayerComponent *playerComponent = (*entities)[i].getComponent<PlayerComponent>();
+			MoveComponent *moveComponent = (*entities)[i].getComponent<MoveComponent>();
 			if (playerComponent && moveComponent)
 			{
-				playerEntity = &entity;
+				playerEntity = i;
 				break;
 			}
 
 		}
 	else
 	{
-		PlayerComponent *playerComponent = playerEntity->getComponent<PlayerComponent>();
-		MoveComponent *moveComponent = playerEntity->getComponent<MoveComponent>();
+		PlayerComponent *playerComponent = (*entities)[playerEntity].getComponent<PlayerComponent>();
+		MoveComponent *moveComponent = (*entities)[playerEntity].getComponent<MoveComponent>();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 			moveComponent->mVelocity.x -= playerComponent->mSpeed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			moveComponent->mVelocity.x += playerComponent->mSpeed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		{
-			if (moveComponent->mVelocity.y >= -5)
-				moveComponent->mVelocity.y -= playerComponent->mSpeed;
-		}
+			moveComponent->mVelocity.y -= playerComponent->mSpeed;
 		
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 			moveComponent->mVelocity.y += playerComponent->mSpeed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			window.close();
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+			tileMap->saveLevelToFile("outputLevel.txt");
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+		{
+			if (debug->grid)
+				debug->grid = false;
+			else debug->grid = true;
+			debug->delay(0.2f);
+		}
 	}
 
 
 }
 
-void InputSystem::handleMouse(sf::RenderWindow & window)
+void InputSystem::handleMouse(sf::RenderWindow &window, std::vector<Entity> *entities)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window)); 
 		tileMap->setTileType(pos, 1);
 	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && debug->grid)
+	{
+		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+		Entity *pickup = entityFactory->createPickup(sf::FloatRect(pos.x, pos.y, 20.0f, 20.0f), "pickup.bmp");
+		entities->push_back(*pickup);
+		delete pickup;
+		debug->delay(0.05f);
+	}
+}
+
+void InputSystem::jump(MoveComponent & moveComponent)
+{
+	moveComponent.isJumping = true;
+	moveComponent.mVelocity.y -= 10.0f;
 }

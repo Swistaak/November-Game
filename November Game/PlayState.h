@@ -18,8 +18,11 @@ public:
 	static PlayState* instance() {
 		return &mPlayState;
 	}
+	void incrementScore(int value);
 private:
 	static PlayState mPlayState;
+	int mScore = 0;
+	
 
 };
 

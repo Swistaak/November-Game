@@ -18,3 +18,13 @@ void Entity::setTag(GameTag newTag)
 {
 	mTag = newTag;
 }
+
+void Entity::deleted()
+{
+	mDeleted = true;
+}
+
+bool operator==(const Entity & en1, const Entity & en2)
+{
+	return (en1.id == en2.id);
+}

@@ -9,5 +9,7 @@ public:
 	EntityFactory() = default;
 	Entity* createPlayer(sf::FloatRect transform, std::string textureName, float speed);
 	Entity* createObject(sf::FloatRect transform, std::string textureName);
+	Entity *createPickup(sf::FloatRect transform, std::string textureName);
 };
+extern EntityFactory* entityFactory;
 #endif

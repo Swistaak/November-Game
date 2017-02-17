@@ -26,7 +26,7 @@ void CollisionSystem::init(std::vector<Entity>* entities)
 	}
 }
 
-void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
+void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* playState)
 {
 	for (auto &entity : *entities)
 	{
@@ -37,23 +37,25 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 		if (trans && move && physic)
 		{
 			Entity* targetOnX = nullptr;
-			targetOnX = checkCollisionOnX(trans->mTransform, move->mVelocity.x);
-			if (targetOnX)
+			targetOnX = checkCollisionOnX(trans->mTransform, move->mVelocity.x); // collision with target on X axis
+			if (targetOnX) // if something on X was hit
 			{
-				if (physic->mPhysic)
+				CollisionComponent *targetPhysic = targetOnX->getComponent<CollisionComponent>();
+				if (physic->mPhysic && targetPhysic->mPhysic)
 				{
 					trans->mTransform.left += getHorizontalDistanceBetweenEntities(&entity, targetOnX);
 					move->mVelocity.x = 0;
 				}
 				collisionHappend = true;
 			}
-
+			
 			Entity* targetOnY = nullptr;
 			targetOnY = checkCollisionOnY(trans->mTransform, move->mVelocity.y);
 
 			if (targetOnY)
 			{
-				if (physic->mPhysic)
+				CollisionComponent *targetPhysic = targetOnY->getComponent<CollisionComponent>();
+				if (physic->mPhysic && targetPhysic->mPhysic)
 				{
 					trans->mTransform.top += getVerticalDistanceBetweenEntities(&entity, targetOnY);
 					move->mVelocity.y = 0;
@@ -63,7 +65,8 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			//-------------------------------------------------------------------------------------------------
 			int tileX{ 0 };
 			int tileY{ 0 };
-			for (int y = trans->mTransform.top; y <= (trans->mTransform.top + trans->mTransform.height); y += 10)
+			//tile collision on x
+			for (int y = trans->mTransform.top; y < (trans->mTransform.top + trans->mTransform.height); y += 10)
 			{
 				if (move->mVelocity.x > 0)
 					tileX = tileMap->getTileAtPos(sf::Vector2f(trans->mTransform.left + trans->mTransform.width + move->mVelocity.x, y));
@@ -77,8 +80,8 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 					break;
 				}
 			}
-
-			for (int x = trans->mTransform.left; x <= (trans->mTransform.left + trans->mTransform.width); x += 10)
+			//tile Collision on Y
+			for (int x = trans->mTransform.left; x < (trans->mTransform.left + trans->mTransform.width); x += 10)
 			{
 				if (move->mVelocity.y > 0)
 					tileY = tileMap->getTileAtPos(sf::Vector2f(x+move->mVelocity.x,trans->mTransform.top+trans->mTransform.height+move->mVelocity.y));
@@ -88,17 +91,32 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 				if (tileY != 0)
 				{
 					collisionHappend = true;
+					if (move->mVelocity.y > 0)
+						move->isJumping = false;
 					move->mVelocity.y = 0;
+
 					break;
 				}
 			}
 			
 			if (collisionHappend)
 			{
+				
 				if (&entity && targetOnX)
 				{
-					MoveComponent *move = targetOnX->getComponent<MoveComponent>();
-					move->mVelocity.x += 2;
+					if (entity.getTag() == GameTag::PLAYER && targetOnX->getTag() == GameTag::PICKUP)
+					{
+						playState->incrementScore(1);
+						targetOnX->deleted();
+					}
+				}
+				if (&entity && targetOnY)
+				{
+					if (entity.getTag() == GameTag::PLAYER && targetOnY->getTag() == GameTag::PICKUP)
+					{
+						playState->incrementScore(1);
+						targetOnY->deleted();
+					}
 				}
 			}
 		}

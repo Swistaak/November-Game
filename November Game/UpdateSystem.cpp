@@ -19,8 +19,8 @@ void UpdateSystem::update(std::vector<Entity>* entities, sf::View &view)
 			}
 
 			moveComponent->mVelocity.x = 0;
-			if (moveComponent->mVelocity.y <= 15)
-				moveComponent->mVelocity.y += 0.5f;
+			moveComponent->mVelocity.y = 0;
+			//updateVelocityOnY(*moveComponent);
 
 
 		}
@@ -40,4 +40,12 @@ void UpdateSystem::centerCameraOn(sf::View & camera, sf::Vector2f pos)
 	currentCenter = camera.getCenter();
 	if (pos.y >= 300 && pos.y <= tileMap->getSizeInPixels().y - 300) 
 		camera.setCenter(currentCenter.x, pos.y);
+}
+
+void UpdateSystem::updateVelocityOnY(MoveComponent & moveComponent)
+{
+	//if (moveComponent.mVelocity.y != 0)
+	//	moveComponent.isJumping = true;
+
+	//moveComponent.mVelocity.y += 0.5f;
 }

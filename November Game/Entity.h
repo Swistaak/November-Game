@@ -36,12 +36,15 @@ public:
 		if (components.count(&typeid(T)) != 0)
 			components.erase(&typeid(T));
 	}
-
+	void deleted();
+	bool getDeleted() { return mDeleted; }
+	friend bool operator==(const Entity &en1, const Entity &en2);
 private:
 	std::unordered_map<const std::type_info*, Component*> components;
 	static int idToSet;
 	int id;
 	GameTag mTag;
+	bool mDeleted{ false };
 };
 
 #endif

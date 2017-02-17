@@ -24,10 +24,11 @@ public:
 	void pushState(GameState* state);
 	void popState();
 
+	void collectGarbage();
+
 	RenderSystem renderSystem;
 	UpdateSystem updateSystem;
 	InputSystem inputSystem;
-	EntityFactory entityFactory;
 	CollisionSystem collisionSystem;
 	sf::View mainView;
 private:
@@ -36,11 +37,8 @@ private:
 	void draw();
 	void handleEvents();
 	void init();
-
-
-
+	
 	std::vector<GameState*> states;
 
 	sf::Event event;
-
 };

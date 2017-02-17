@@ -3,6 +3,7 @@
 #include <SFML\Graphics.hpp>
 #include "TextureManager.h"
 #include "DataManager.h"
+#include "Debug.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -15,9 +16,13 @@ public:
 	sf::Vector2i getSizeInPixels();
 	int getTileAtPos(sf::Vector2f pos);
 	void setTileType(sf::Vector2f pos, int tileType);
-private:
-	
 	void loadLevelFromFile(std::string levelFileName);
+	void saveLevelToFile(std::string levelFileName);
+
+	friend std::ostream& operator<< (std::ostream &out, const TileMap &tileMap);
+	friend std::istream& operator >> (std::istream &in, TileMap &tileMap);
+private:
+
 	void setMapSize(sf::Vector2i sizeInTiles);
 	void resizeTileVector(sf::Vector2i newSize);
 

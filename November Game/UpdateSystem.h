@@ -9,6 +9,8 @@ class UpdateSystem
 public:
 	void update(std::vector<Entity> *entities, sf::View &view);
 	void centerCameraOn(sf::View & camera, sf::Vector2f pos);
+private:
+	void updateVelocityOnY(MoveComponent &moveComponent);
 };
 
 

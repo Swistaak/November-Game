@@ -15,8 +15,7 @@ public:
 	virtual void update(Game* game) = 0;
 	virtual void draw(Game* game) = 0;
 
-	void changeState(Game* game,
-		GameState* state);
+	void changeState(Game* game, GameState* state);
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define RENDER_SYSTEM_H
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
+#include "Debug.h"
 class RenderSystem
 {
 public:

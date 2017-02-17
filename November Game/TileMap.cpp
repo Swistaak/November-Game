@@ -10,7 +10,7 @@ TileMap::TileMap(std::string levelFileName, std::string tileDataXmlFile)
 TileMap::TileMap(std::string tileDataXmlFile)
 {
 	dataManager->loadTileDataFromXML(tileDataXmlFile);
-	setMapSize(sf::Vector2i(250, 250));
+	setMapSize(sf::Vector2i(100, 100));
 	resizeTileVector(this->mapSizeInTiles);
 	for (int y = 0; y < mapSizeInTiles.y; y++)
 	{
@@ -87,7 +87,24 @@ void TileMap::loadLevelFromFile(std::string levelFileName)
 		for (int x = 0; x < mapSizeInTiles.x; x++)
 			levelFile >> tiles[x][y];
 	}
+	levelFile.close();
+}
 
+void TileMap::saveLevelToFile(std::string levelFileName)
+{
+	std::ofstream outputLevelFile;
+	outputLevelFile.open(levelFileName);
+
+	outputLevelFile << mapSizeInTiles.x << std::endl;
+	outputLevelFile << mapSizeInTiles.y << std::endl;
+
+	for (int y = 0; y < mapSizeInTiles.y; y++)
+	{
+		for (int x = 0; x < mapSizeInTiles.x; x++)
+			outputLevelFile << tiles[x][y] << " ";
+		outputLevelFile << std::endl;
+	}
+	outputLevelFile.close();
 }
 
 
@@ -115,4 +132,34 @@ bool TileMap::isOutOfBounds(sf::Vector2f pos)
 	if (pos.x < 0 || pos.x >= mapSizeInPixels.x || pos.y < 0 || pos.y >= mapSizeInPixels.y)
 		return true;
 	return false;
+}
+
+std::ostream & operator<<(std::ostream & out, const TileMap & tileMap)
+{
+	out << tileMap.mapSizeInTiles.x << std::endl;
+	out << tileMap.mapSizeInTiles.y << std::endl;
+
+	for (int y = 0; y < tileMap.mapSizeInTiles.y; y++)
+	{
+		for (int x = 0; x < tileMap.mapSizeInTiles.x; x++)
+			out << tileMap.tiles[x][y] << " ";
+		out << std::endl;
+	}
+	return out;
+}
+
+std::istream & operator >> (std::istream & in, TileMap & tileMap)
+{
+	sf::Vector2i mapSize;
+	in >> mapSize.x;
+	in >> mapSize.y;
+
+	tileMap.setMapSize(mapSize);
+	tileMap.resizeTileVector(mapSize);
+	for (int y = 0; y < tileMap.mapSizeInTiles.y; y++)
+	{
+		for (int x = 0; x < tileMap.mapSizeInTiles.x; x++)
+			in >> tileMap.tiles[x][y];
+	}
+	return in;
 }
