@@ -19,6 +19,9 @@ private:
 	Entity* checkCollisionOnX(sf::FloatRect rect, float velocityX);
 	Entity* checkCollisionOnY(sf::FloatRect rect, float velocityY);
 
+	sf::Vector2i getTileCollidingOnX(sf::FloatRect rect, float velocityX);
+	sf::Vector2i getTileCollidingOnY(sf::FloatRect rect, float velocityY);
+
 	float getHorizontalDistanceBetweenEntities(Entity *source, Entity*target);
 	float getVerticalDistanceBetweenEntities(Entity *source, Entity* target);
 	std::unordered_map<int, std::list<Entity*>> cellBuckets;

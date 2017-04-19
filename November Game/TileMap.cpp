@@ -26,20 +26,27 @@ TileMap::TileMap(std::string tileDataXmlFile)
 
 }
 
-void TileMap::draw(sf::RenderWindow & window)
+void TileMap::draw(sf::RenderWindow & window,float zoomRate)
 {
 
 	sf::Vector2f center = window.getView().getCenter();
+	sf::Vector2u winSize = window.getSize();
+	winSize.x = winSize.x * zoomRate;
+	winSize.y = winSize.y * zoomRate;
 
-	int begY = static_cast<int>((center.y - 300) / tileSize);
-	int endY = static_cast<int>(((center.y + 300) / tileSize)+1);
-	int begX = static_cast<int>((center.x - 400) / tileSize);
-	int endX = static_cast<int>(((center.x + 400) / tileSize) + 1);
+	int begY = (static_cast<int>(((center.y - (winSize.y/2.0f)) / tileSize) ));
+	int endY = (static_cast<int>(((center.y + (winSize.y/2.0f)) / tileSize)+1));
+	int begX = (static_cast<int>(((center.x - (winSize.x/2.0f)) / tileSize)));
+	int endX = (static_cast<int>(((center.x + (winSize.x/2.0f)) / tileSize) + 1));
 
 	if (endY > mapSizeInTiles.y)
 		endY = mapSizeInTiles.y;
 	if (endX > mapSizeInTiles.x)
 		endX = mapSizeInTiles.x;
+	if (begX < 0)
+		begX = 0;
+	if (begY < 0)
+		begY = 0;
 
 	for (int y = begY; y < endY; y++)
 	{
@@ -61,7 +68,7 @@ sf::Vector2i TileMap::getSizeInPixels()
 int TileMap::getTileAtPos(sf::Vector2f pos)
 {
 	if (isOutOfBounds(pos))
-		return 0;
+		return -1;
 	return tiles[pos.x / tileSize][pos.y / tileSize];
 }
 
@@ -108,6 +115,11 @@ void TileMap::saveLevelToFile(std::string levelFileName)
 }
 
 
+
+int TileMap::getTileSize()
+{
+	return tileSize;
+}
 
 void TileMap::setMapSize(sf::Vector2i sizeInTiles)
 {

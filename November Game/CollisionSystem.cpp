@@ -52,7 +52,7 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* 
 			Entity* targetOnY = nullptr;
 			targetOnY = checkCollisionOnY(trans->mTransform, move->mVelocity.y);
 
-			if (targetOnY)
+			if (targetOnY) // if something on Y was hit
 			{
 				CollisionComponent *targetPhysic = targetOnY->getComponent<CollisionComponent>();
 				if (physic->mPhysic && targetPhysic->mPhysic)
@@ -63,45 +63,28 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* 
 				collisionHappend = true;
 			}
 			//-------------------------------------------------------------------------------------------------
-			int tileX{ 0 };
-			int tileY{ 0 };
+
+			sf::Vector2i tileColliding;
 			//tile collision on x
-			for (int y = trans->mTransform.top; y < (trans->mTransform.top + trans->mTransform.height); y += 10)
+			tileColliding = getTileCollidingOnX(trans->mTransform, move->mVelocity.x);
+			/*if (tileColliding.x != -1)
 			{
 				if (move->mVelocity.x > 0)
-					tileX = tileMap->getTileAtPos(sf::Vector2f(trans->mTransform.left + trans->mTransform.width + move->mVelocity.x, y));
+					move->mVelocity.x = (tileColliding.x*tileMap->getTileSize()) - (trans->mTransform.left + trans->mTransform.width+1);
 				else if (move->mVelocity.x < 0)
-					tileX = tileMap->getTileAtPos(sf::Vector2f(trans->mTransform.left + move->mVelocity.x, y));
-
-				if (tileX != 0)
-				{
-					collisionHappend = true;
-					move->mVelocity.x = 0;
-					break;
-				}
+					move->mVelocity.x = -((trans->mTransform.left) - ((tileColliding.x+1)*tileMap->getTileSize()));
 			}
-			//tile Collision on Y
-			for (int x = trans->mTransform.left; x < (trans->mTransform.left + trans->mTransform.width); x += 10)
+			tileColliding = getTileCollidingOnY(trans->mTransform, move->mVelocity.y);
+			if (tileColliding.y != -1)
 			{
+
 				if (move->mVelocity.y > 0)
-					tileY = tileMap->getTileAtPos(sf::Vector2f(x+move->mVelocity.x,trans->mTransform.top+trans->mTransform.height+move->mVelocity.y));
+					move->mVelocity.y = (tileColliding.y*tileMap->getTileSize()) - (trans->mTransform.top + trans->mTransform.height+1);
 				else if (move->mVelocity.y < 0)
-					tileY = tileMap->getTileAtPos(sf::Vector2f(x+move->mVelocity.x,trans->mTransform.top+move->mVelocity.y));
-
-				if (tileY != 0)
-				{
-					collisionHappend = true;
-					if (move->mVelocity.y > 0)
-						move->isJumping = false;
-					move->mVelocity.y = 0;
-
-					break;
-				}
-			}
-			
+					move->mVelocity.y = -((trans->mTransform.top) - ((tileColliding.y + 1)*tileMap->getTileSize()));
+			}*/
 			if (collisionHappend)
 			{
-				
 				if (&entity && targetOnX)
 				{
 					if (entity.getTag() == GameTag::PLAYER && targetOnX->getTag() == GameTag::PICKUP)
@@ -114,7 +97,7 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* 
 				{
 					if (entity.getTag() == GameTag::PLAYER && targetOnY->getTag() == GameTag::PICKUP)
 					{
-						playState->incrementScore(1);
+						//playState->incrementScore(1);
 						targetOnY->deleted();
 					}
 				}
@@ -203,6 +186,59 @@ Entity* CollisionSystem::checkCollisionOnY(sf::FloatRect rect, float velocityY)
 	}
 
 	return nullptr;
+}
+
+sf::Vector2i CollisionSystem::getTileCollidingOnX(sf::FloatRect rect, float velocityX)
+{
+	int tileSize = tileMap->getTileSize();
+		int tile = 0;
+		sf::Vector2f tilePos{0,0};
+
+		if (velocityX > 0)
+			tilePos.x = rect.left + rect.width + velocityX;
+		else
+			tilePos.x = rect.left + velocityX;
+
+		if (rect.height < tileSize)
+		{
+			tilePos.y = rect.top;
+			tile = tileMap->getTileAtPos(tilePos);
+			if (tile != 0)
+				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
+
+			tilePos.y = rect.top + rect.height;
+			tile = tileMap->getTileAtPos(tilePos);
+			if (tile != 0)
+				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
+		}
+	return sf::Vector2i(-1, -1);
+}
+
+sf::Vector2i CollisionSystem::getTileCollidingOnY(sf::FloatRect rect, float velocityY)
+{
+	int tileSize = tileMap->getTileSize();
+		int tile = 0;
+		sf::Vector2f tilePos{ 0,0 };
+
+		if (velocityY > 0)
+			tilePos.y = rect.top + rect.height + velocityY;
+		else
+			tilePos.y = rect.top + velocityY;
+
+		if (rect.width < tileSize)
+		{
+			tilePos.x = rect.left;
+			tile = tileMap->getTileAtPos(tilePos);
+			if (tile != 0)
+				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
+
+			tilePos.x = rect.left + rect.width;
+			tile = tileMap->getTileAtPos(tilePos);
+			if (tile != 0)
+				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
+		}
+	
+	return sf::Vector2i(-1, -1);
 }
 
 float CollisionSystem::getHorizontalDistanceBetweenEntities(Entity *source, Entity *target)

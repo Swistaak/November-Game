@@ -2,6 +2,7 @@
 #define PLAY_STATE_H
 #include "GameState.h"
 #include "TileMap.h"
+#include "LevelGenerator.h"
 class PlayState : public GameState
 {
 public:

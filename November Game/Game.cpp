@@ -95,8 +95,10 @@ void Game::init()
 	window.create(sf::VideoMode(800, 600), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
 	mainView.setSize(800, 600);
-	mainView.setCenter(400, 300);
+	mainView.zoom(zoomRate);
+	mainView.setCenter(400*zoomRate, 300*zoomRate);
 	window.setView(mainView);
+
 	changeState(PlayState::instance());
 }
 

@@ -3,19 +3,20 @@
 PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
+	LevelGenerator levelGen;
+	levelGen.generateAndSave(100, 100, "outputLevel.txt");
 	tileMap = new TileMap("outputLevel.txt","tiles_spritesheet.xml");
-	Entity *player = entityFactory->createPlayer(sf::FloatRect(50.0f, 50.0f, 60.0f, 60.0f), "player.bmp", 3);
+	Entity *player = entityFactory->createPlayer(sf::FloatRect(50.0f, 50.0f, 24.0f, 24.0f), "player.png", 9.0f);
 	game->entities.push_back(*player);
 	for (float x = 0; x < 10; x++)
 	{
 		for (int y = 0; y < 10; y++)
 		{
-			Entity *pickup = entityFactory->createPickup(sf::FloatRect(50 + x*50.0f, 150.0f + y*120.0f, 20.0f, 20.0f), "pickup.bmp");
-			game->entities.push_back(*pickup);
+			//Entity *pickup = entityFactory->createPickup(sf::FloatRect(50 + x*50.0f, 150.0f + y*120.0f, 20.0f, 20.0f), "pickup.bmp");
+			//game->entities.push_back(*pickup);
 		}
 	
 	}
-	
 }
 
 void PlayState::cleanup()
@@ -47,7 +48,7 @@ void PlayState::update(Game * game)
 
 void PlayState::draw(Game * game)
 {
-	tileMap->draw(game->window);
+	tileMap->draw(game->window,game->zoomRate);
 
 	if (debug->grid)
 	game->renderSystem.drawGrid(game->window);
@@ -57,7 +58,5 @@ void PlayState::draw(Game * game)
 
 void PlayState::incrementScore(int value)
 {
-	mScore += value;
-	system("cls");
-	std::cout << "Score : " << mScore << std::endl;
+
 }

@@ -12,7 +12,7 @@ class TileMap
 public:
 	TileMap(std::string levelFileName, std::string tileDataXmlFile);
 	TileMap(std::string tileDataXmlFile);
-	void draw(sf::RenderWindow &window);
+	void draw(sf::RenderWindow &window,float zoomRate);
 	sf::Vector2i getSizeInPixels();
 	int getTileAtPos(sf::Vector2f pos);
 	void setTileType(sf::Vector2f pos, int tileType);
@@ -21,6 +21,8 @@ public:
 
 	friend std::ostream& operator<< (std::ostream &out, const TileMap &tileMap);
 	friend std::istream& operator >> (std::istream &in, TileMap &tileMap);
+
+	int getTileSize();
 private:
 
 	void setMapSize(sf::Vector2i sizeInTiles);

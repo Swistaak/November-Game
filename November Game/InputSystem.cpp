@@ -49,7 +49,7 @@ void InputSystem::handleMouse(sf::RenderWindow &window, std::vector<Entity> *ent
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window)); 
-		tileMap->setTileType(pos, 1);
+		//tileMap->setTileType(pos, 1);
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && debug->grid)
 	{

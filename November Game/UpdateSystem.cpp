@@ -35,10 +35,11 @@ void UpdateSystem::update(std::vector<Entity>* entities, sf::View &view)
 void UpdateSystem::centerCameraOn(sf::View & camera, sf::Vector2f pos)
 {
 	sf::Vector2f currentCenter = camera.getCenter();
-	if (pos.x >= 400 && pos.x <= tileMap->getSizeInPixels().x - 400)
+	sf::Vector2f size = camera.getSize();
+	if (pos.x >= size.x/2.0f && pos.x <= tileMap->getSizeInPixels().x - size.x/2.0f)
 		camera.setCenter(pos.x, currentCenter.y);
 	currentCenter = camera.getCenter();
-	if (pos.y >= 300 && pos.y <= tileMap->getSizeInPixels().y - 300) 
+	if (pos.y >= size.y/2.0f && pos.y <= tileMap->getSizeInPixels().y - size.y/2.0f) 
 		camera.setCenter(currentCenter.x, pos.y);
 }
 

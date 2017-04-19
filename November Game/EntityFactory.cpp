@@ -7,6 +7,7 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0));
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
+	sprite->mSprite.setTextureRect(sf::IntRect(0.0f, 0,transform.width, transform.height));
 	PlayerComponent *player = new PlayerComponent(speed);
 	CollisionComponent *collision = new CollisionComponent(true);
 
