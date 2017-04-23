@@ -3,10 +3,10 @@
 PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
-	LevelGenerator levelGen;
-	levelGen.generateAndSave(100, 100, "outputLevel.txt");
-	tileMap = new TileMap("outputLevel.txt","tiles_spritesheet.xml");
-	Entity *player = entityFactory->createPlayer(sf::FloatRect(50.0f, 50.0f, 24.0f, 24.0f), "player.png", 9.0f);
+	LevelGenerator::LevelGenerator levelGen;
+	levelGen.generateAndSave(400, 400, "outputLevel.png");
+	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml");
+	Entity *player = entityFactory->createPlayer(sf::FloatRect(33.0f, 97.0f, 24.0f, 24.0f), "player.png", 3.0f);
 	game->entities.push_back(*player);
 	for (float x = 0; x < 10; x++)
 	{

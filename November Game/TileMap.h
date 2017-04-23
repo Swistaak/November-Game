@@ -35,7 +35,7 @@ private:
 
 	sf::Vector2i mapSizeInTiles;
 	sf::Vector2i mapSizeInPixels;
-	int tileSize{ 30 };
+	int tileSize{ 64 };
 };
 #endif
 extern TileMap* tileMap;

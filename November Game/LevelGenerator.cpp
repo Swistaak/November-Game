@@ -1,312 +1,362 @@
 #include "LevelGenerator.h"
-
-LevelGenerator::LevelGenerator()
+namespace LevelGenerator
 {
-	
-}
-
-void LevelGenerator::generateAndSave(int width, int height, std::string outputFile)
-{
-	generateLevel(width, height);
-	saveLevelToFile(outputFile);
-}
-
-void LevelGenerator::generateLevel(int width, int height)
-{
-	resizeTileVector(width, height);
-	initializeLevel();
-	generateRooms();
-	putRoomsIntoTiles();
-	generateMazes();
-	//removeAlmostLoneWalls();
-	//startMaze(2, 2);
-
-}
-void LevelGenerator::saveLevelToFile(std::string outputFileName)
-{
-	std::ofstream outputLevelFile;
-	outputLevelFile.open(outputFileName);
-
-	outputLevelFile << tiles.size() << std::endl;
-	outputLevelFile << tiles[0].size() << std::endl;
-
-	for (int y = 0; y < tiles[0].size(); y++)
+	LevelGenerator::LevelGenerator()
 	{
-		for (int x = 0; x < tiles.size(); x++)
-		{
-			if (tiles[x][y] == EMPTY)
-				tiles[x][y] = WALL;
-			outputLevelFile << tiles[x][y] << " ";
-		}
-			
-		outputLevelFile << std::endl;
-	}
-	outputLevelFile.close();
-}
-void LevelGenerator::resizeTileVector(int newX, int newY)
-{
-	tiles.resize(newX);
-	levelWidth = newX;
-	levelHeight = newY;
-	for (int x = 0; x< newX; x++)
-	{
-		tiles[x].resize(newY);
-	}
-}
 
-
-void LevelGenerator::initializeLevel()
-{
-	for (int x = 0; x < levelWidth; x++)
-	{
-		for (int y = 0; y < levelHeight; y++)
-		{
-			if (x == 0 || x == levelWidth - 1 || y == 0 || y == levelHeight - 1)
-				tiles[x][y] = WALL;
-			else
-			tiles[x][y] = EMPTY;
-		}
 	}
+
+	void LevelGenerator::generateAndSave(int width, int height, std::string outputFile)
+	{
+		generateLevel(width, height);
+		saveLevelToFile(outputFile);
+	}
+
+	void LevelGenerator::generateLevel(int width, int height)
+	{
+		resizeTileVector(width, height);
+		initializeLevel();
+		generateRooms();
+		putRoomsIntoTiles();
+		generateMazes();
+		putWalls();
+		createConnectors();
 		
-}
+		removeDeadEnds();
 
-void LevelGenerator::generateRooms()
-{
-	std::random_device rd; 
-	std::mt19937 eng(rd()); 
-	std::uniform_int_distribution<> distr(3,6); 
-	std::uniform_int_distribution<> distrLeft(1,(levelWidth-14)/2);
-	std::uniform_int_distribution<> distrTop(1, (levelHeight-14)/2);
-
-	int tries = 0;
-	sf::IntRect room;
-	while (tries < 700)
-	{
-		room.width = distr(eng) * 2 + 1;
-		room.height = distr(eng) * 2 + 1;
-		room.left = distrLeft(eng) * 2 + 1;
-		room.top = distrTop(eng) * 2 + 1;
-		if (!roomOverlaps(room))
-		{
-			rooms.push_back(room);
-		}
-		tries++;
 	}
-}
-
-bool LevelGenerator::roomOverlaps(sf::IntRect room)
-{
-	for (auto it = rooms.begin(); it != rooms.end(); it++)
+	void LevelGenerator::saveLevelToFile(std::string outputFileName)
 	{
-		if (it->intersects(room))
-			return true;
-	}
-	return false;
-}
-
-void LevelGenerator::putRoomsIntoTiles()
-{
-	for (auto it = rooms.begin(); it != rooms.end(); it++)
-	{
-		for (int x = it->left; x != it->left + it->width; x++)
+		sf::Image image;
+		image.create(levelWidth, levelHeight);
+		for (int y = 0; y < tiles[0].size(); y++)
 		{
-			for (int y = it->top; y != it->top + it->height; y++)
+			for (int x = 0; x < tiles.size(); x++)
 			{
-				tiles[x][y] = WALL;
+				sf::Color color(tiles[x][y].tileType, 128, 128);
+				image.setPixel(x, y, color);
 			}
 		}
-		for (int x = it->left+1; x != it->left + it->width-1; x++)
+		image.saveToFile(outputFileName);
+	}
+	void LevelGenerator::resizeTileVector(int newX, int newY)
+	{
+		tiles.resize(newX);
+		levelWidth = newX;
+		levelHeight = newY;
+		for (int x = 0; x< newX; x++)
 		{
-			for (int y = it->top+1; y != it->top + it->height-1; y++)
-			{
-				tiles[x][y] = ROOM_FLOOR;
-			}
+			tiles[x].resize(newY);
 		}
 	}
-}
 
-void LevelGenerator::generateMazes()
-{
-	bool newLine = true;
-	bool existingLine = true;
-	newLine = startNewLine();
-	while (newLine)
+
+	void LevelGenerator::initializeLevel()
 	{
-		while (existingLine)
+		for (int x = 0; x < levelWidth; x++)
 		{
-			existingLine = startLineFromExistingLine();
+			for (int y = 0; y < levelHeight; y++)
+			{
+				if (x == 0 || x == levelWidth - 1 || y == 0 || y == levelHeight - 1)
+					tiles[x][y] = Tile(WALL, 0);
+				else
+					tiles[x][y] = Tile(EMPTY, 0);
+			}
 		}
-		newLine = startNewLine();
+
 	}
-}
 
-void LevelGenerator::startMaze(int xPos, int yPos)
-{
-	int* directions;
-	bool hasEnded = false;
-	bool moved = false;
-	int lastDirection = 0;
-	int x = xPos;
-	int y = yPos;
-	tiles[x][y] = MAZE_CORRIDOR;
-	while (!hasEnded)
+	void LevelGenerator::generateRooms()
 	{
-		directions = populateDirections(lastDirection);
-		for (int i = 0; i < 4; i++)
+		std::random_device rd;
+		std::mt19937 eng(rd());
+		std::uniform_int_distribution<> distr(3, 6);
+		std::uniform_int_distribution<> distrLeft(0, (levelWidth - 14) / 2);
+		std::uniform_int_distribution<> distrTop(0, (levelHeight - 14) / 2);
+		int roomIndex = 0;
+		int tries = 0;
+		while (tries < 28000)
 		{
-			//std::cout << " " << x << " " << y << " ";
-			if (directions[i] == BOTTOM)
+			Room room(distrLeft(eng) * 2 + 1, distrTop(eng) * 2 + 1, distr(eng) * 2 + 1, distr(eng) * 2 + 1);
+			if (!roomOverlaps(room))
 			{
-				if (tiles[x][y + 1] == EMPTY &&  hasNearbyCount(x, y + 1, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x,y+1,MAZE_CORRIDOR)<=1 && y+1 <= levelHeight-2)
-				{
-					//std::cout << "go bottom" << hasNearbyCount(x, y+1, MAZE_CORRIDOR)<<std::endl;
-					y++; tiles[x][y] = MAZE_CORRIDOR;
-					moved = true;
-					lastDirection = BOTTOM;
-				}
-			} 
-			else if (directions[i] == RIGHT)
-			{
-				if (tiles[x + 1][y] == EMPTY &&  hasNearbyCount(x + 1, y, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x+1, y, MAZE_CORRIDOR) <= 1  && x+1 <= levelWidth-2)
-				{
-					//std::cout << "go right" << hasNearbyCount(x + 1, y, MAZE_CORRIDOR) << std::endl;
-					x++; tiles[x][y] = MAZE_CORRIDOR;
-					moved = true;
-					lastDirection = RIGHT;
-				}
+				room.setIndex(roomIndex);
+				rooms.push_back(room);
+				roomIndex++;
 			}
-			else if (directions[i] == TOP)
-			{
-				if (tiles[x][y - 1] == EMPTY &&  hasNearbyCount(x, y - 1, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x, y -1, MAZE_CORRIDOR) <= 1  && y-1 >=1)
-				{
-					//std::cout << "go top" << hasNearbyCount(x , y-1, MAZE_CORRIDOR)<< std::endl;
-					y--; tiles[x][y] = MAZE_CORRIDOR;
-					moved = true;
-					lastDirection = TOP;
-				}
-			}
-			else if (directions[i] == LEFT)
-			{
-				if (tiles[x - 1][y] == EMPTY  && hasNearbyCount(x - 1, y, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x-1, y, MAZE_CORRIDOR) <= 1  && x-1 >=1)
-				{
-					//std::cout << "go left" << hasNearbyCount(x -1, y, MAZE_CORRIDOR)<<std::endl;
-					x--; tiles[x][y] = MAZE_CORRIDOR;
-					moved = true;
-					lastDirection = LEFT;
-				}
-			}
-			else
-			{
-				std::cout << "Notihng?" << std::endl;
-			}
-			if (moved)
-				break;
+			tries++;
 		}
-		//std::cout << std::endl;
-		if (!moved)
-			hasEnded = true;
-		else
+	}
+
+	bool LevelGenerator::roomOverlaps(Room room)
+	{
+		for (auto it = rooms.begin(); it != rooms.end(); it++)
+		{
+			if (it->intersects(room))
+				return true;
+		}
+		return false;
+	}
+
+	void LevelGenerator::putRoomsIntoTiles()
+	{
+		for (auto it = rooms.begin(); it != rooms.end(); it++)
+		{
+			for (int x = it->x; x != it->x + it->w; x++)
+			{
+				for (int y = it->y; y != it->y + it->h; y++)
+				{
+					tiles[x][y] = Tile(WALL, 0);
+				}
+			}
+			for (int x = it->x + 1; x != it->x + it->w - 1; x++)
+			{
+				for (int y = it->y + 1; y != it->y + it->h - 1; y++)
+				{
+					tiles[x][y] = Tile(ROOM_FLOOR, 0);
+				}
+			}
+		}
+	}
+
+	void LevelGenerator::generateMazes()
+	{
+		bool newLine = true;
+		bool existingLine = true;
+		int mazeRegionIndex = 0;
+		newLine = newMaze(mazeRegionIndex);
+		
+		while (newLine)
+		{
+			while (existingLine)
+			{
+				existingLine = expandMaze(mazeRegionIndex);
+			}
+			mazeRegionIndex++;
+			mazeRegionCount = mazeRegionIndex;
+			newLine = newMaze(mazeRegionIndex);
+		}
+	}
+	
+	void LevelGenerator::digMazeAt(int xPos, int yPos, int mazeRegionIndex)
+	{
+		int* directions;
+		bool hasEnded = false;
+		bool moved = false;
+		int lastDirection = 0;
+		int x = xPos;
+		int y = yPos;
+		tiles[x][y] = Tile(MAZE_CORRIDOR, mazeRegionIndex);
+		while (!hasEnded)
+		{
 			moved = false;
-	}
-}
-
-bool LevelGenerator::startLineFromExistingLine()
-{
-	for (int x = 2; x < levelWidth - 1; x++)
-	{
-		for (int y = 2; y < levelHeight - 1; y++)
-		{
-			if (tiles[x][y] == EMPTY && hasNeighbourCount(x, y, MAZE_CORRIDOR)==1 && hasNearbyCount(x, y, MAZE_CORRIDOR) <= 3)
+			directions = populateDirections(lastDirection);
+			for (int i = 0; i < 4; i++)
 			{
-				//std::cout <<"start exist" << x << " " << y << std::endl;
-				startMaze(x, y);
-				return true;
+				if (directions[i] == BOTTOM)
+				{
+					if (tiles[x][y + 1].tileType == EMPTY &&  hasNearbyCount(x, y + 1, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x, y + 1, MAZE_CORRIDOR) <= 1 && y + 1 <= levelHeight - 2)
+					{
+						y++;
+						moved = true;
+						lastDirection = BOTTOM;
+					}
+				}
+				else if (directions[i] == RIGHT)
+				{
+					if (tiles[x + 1][y].tileType == EMPTY &&  hasNearbyCount(x + 1, y, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x + 1, y, MAZE_CORRIDOR) <= 1 && x + 1 <= levelWidth - 2)
+					{
+						x++;
+						moved = true;
+						lastDirection = RIGHT;
+					}
+				}
+				else if (directions[i] == TOP)
+				{
+					if (tiles[x][y - 1].tileType == EMPTY &&  hasNearbyCount(x, y - 1, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x, y - 1, MAZE_CORRIDOR) <= 1 && y - 1 >= 1)
+					{
+
+						y--; 
+						moved = true;
+						lastDirection = TOP;
+					}
+				}
+				else if (directions[i] == LEFT)
+				{
+					if (tiles[x - 1][y].tileType == EMPTY  && hasNearbyCount(x - 1, y, MAZE_CORRIDOR) <= 2 && hasNeighbourCount(x - 1, y, MAZE_CORRIDOR) <= 1 && x - 1 >= 1)
+					{
+						x--;
+						moved = true;
+						lastDirection = LEFT;
+					}
+				}
+				if (moved)
+				{
+					tiles[x][y] = Tile(MAZE_CORRIDOR, mazeRegionIndex);
+				}
+					
+			}
+			if (!moved)
+				hasEnded = true;
+		}
+	}
+
+	bool LevelGenerator::expandMaze(int mazeRegionIndex)
+	{
+		for (int x = 1; x < levelWidth - 1; x++)
+		{
+			for (int y = 1; y < levelHeight - 1; y++)
+			{
+				if (tiles[x][y].tileType == EMPTY && hasNeighbourCount(x, y, MAZE_CORRIDOR) == 1 && hasNearbyCount(x, y, MAZE_CORRIDOR) <= 3)
+				{
+					digMazeAt(x, y, mazeRegionIndex);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bool LevelGenerator::newMaze(int mazeRegionIndex)
+	{
+		for (int x = 2; x < levelWidth - 1; x++)
+		{
+			for (int y = 2; y < levelHeight - 1; y++)
+			{
+				if (tiles[x][y].tileType == EMPTY && hasNeighbourCount(x, y, EMPTY)>0 && hasNeighbourCount(x, y, MAZE_CORRIDOR) == 0)
+				{
+					digMazeAt(x, y, mazeRegionIndex);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	void LevelGenerator::putWalls()
+	{
+		for (int x = 0; x < levelWidth; x++)
+		{
+			for (int y = 0; y < levelHeight; y++)
+			{
+				if (tiles[x][y].tileType == EMPTY)
+					tiles[x][y].tileType = WALL;
 			}
 		}
 	}
-	return false;
-}
 
-bool LevelGenerator::startNewLine()
-{
-	for (int x = 2; x < levelWidth - 1; x++)
+	void LevelGenerator::createConnectors()
 	{
-		for (int y = 2; y < levelHeight - 1; y++)
+		for (int mazeRegionIndex = 0; mazeRegionIndex < mazeRegionCount; mazeRegionIndex++)
 		{
-			if (tiles[x][y] == EMPTY && hasNeighbourCount(x, y, EMPTY)>0 && hasNearbyCount(x, y, MAZE_CORRIDOR) <= 2)
+			for (auto it = rooms.begin(); it != rooms.end(); it++)
 			{
-				//tiles[x][y] = MAZE_CORRIDOR;
-				startMaze(x, y);
-				return true;
+				for (int x = it->x; x < it->x + it->w; x++)
+				{
+					for (int y = it->y; y < it->y + it->h; y++)
+					{
+						if (!it->hasConnectorWith(mazeRegionIndex) && tiles[x][y].tileType == WALL && ((hasNeighbourCount(x, y, MAZE_CORRIDOR, mazeRegionIndex) == 1 && hasNeighbourCount(x, y, ROOM_FLOOR) == 1)
+						))
+						{
+							tiles[x][y].tileType = DOOR;
+							it->connectors.push_back(mazeRegionIndex);
+						}
+						else if (tiles[x][y].tileType == WALL && hasNeighbourCount(x, y, ROOM_FLOOR) == 2)
+						{
+							//tiles[x][y].tileType = DOOR;
+						}
+					}
+				}
 			}
 		}
 	}
-	return false;
-}
 
-int LevelGenerator::hasNeighbourCount(int xPos, int yPos,Tiles tileType)
-{
-	int count = 0;
-	if (tiles[xPos - 1][yPos] == tileType)
-		count++;
-	if (tiles[xPos + 1][yPos] == tileType)
-		count++;
-	if (tiles[xPos][yPos - 1] == tileType)
-		count++;
-	if (tiles[xPos][yPos + 1] == tileType)
-		count++;
-	return count;
-}
-
-int LevelGenerator::hasNearbyCount(int xPos, int yPos, Tiles tileType)
-{
-	int count = 0;
-	for (int x = xPos - 1; x <= xPos + 1; x++)
+	void LevelGenerator::removeDeadEnds()
 	{
-		for (int y = yPos - 1; y <= yPos + 1; y++)
+		bool removed = true;
+		while (removed)
 		{
-			if (tiles[x][y] == tileType)
-				count++;
-		}
-	}
-	return count;
-}
-
-void LevelGenerator::removeAlmostLoneWalls()
-{
-	for (int x = 1; x < levelWidth - 1; x++)
-	{
-		for (int y = 1; y < levelHeight - 1; y++)
-		{
-			if (hasNearbyCount(x, y, MAZE_CORRIDOR) >= 7)
-				tiles[x][y] = ROOM_FLOOR;
+			removed = false;
+			for (int x = 0; x < levelWidth; x++)
+			{
+				for (int y = 0; y < levelHeight; y++)
+				{
+					if (tiles[x][y].tileType == MAZE_CORRIDOR && hasNeighbourCount(x, y, WALL) >= 3)
+					{
+						tiles[x][y].tileType = WALL;
+						removed = true;
+					}
+				}
+			}
 		}
 	}
 
-}
+	int LevelGenerator::hasNeighbourCount(int xPos, int yPos, TileType tileType)
+	{
+		int count = 0;
+		if (xPos-1 >= 0 && tiles[xPos - 1][yPos].tileType == tileType)
+			count++;
+		if (xPos+1 < levelWidth && tiles[xPos + 1][yPos].tileType == tileType)
+			count++;
+		if (yPos-1 >= 0 && tiles[xPos][yPos - 1].tileType == tileType)
+			count++;
+		if (yPos+1 < levelHeight && tiles[xPos][yPos + 1].tileType == tileType)
+			count++;
+		return count;
+	}
 
-int* LevelGenerator::populateDirections(int lastDirection)
-{
-	int* directions = new int[4];
-	for (int i = 0; i < 4; i++)
+	int LevelGenerator::hasNeighbourCount(int xPos, int yPos, TileType tileType, int regionId)
 	{
-		directions[i] = i;
+		int count = 0;
+		if (xPos - 1 >= 0 && tiles[xPos - 1][yPos].tileType == tileType && tiles[xPos - 1][yPos].region == regionId)
+			count++;
+		if (xPos + 1 < levelWidth && tiles[xPos + 1][yPos].tileType == tileType && tiles[xPos + 1][yPos].region == regionId )
+			count++;
+		if (yPos - 1 >= 0 && tiles[xPos][yPos - 1].tileType == tileType && tiles[xPos][yPos-1].region == regionId )
+			count++;
+		if (yPos + 1 < levelHeight && tiles[xPos][yPos + 1].tileType == tileType&& tiles[xPos][yPos+1].region == regionId )
+			count++;
+		return count;
 	}
-	int first = 0;
-	int second = 0;
-	for (int i = 0; i < 4; i++)
+
+	int LevelGenerator::hasNearbyCount(int xPos, int yPos, TileType tileType)
 	{
-		first = std::rand() % 4;
-		second = std::rand() % 4;
-		std::swap(directions[first], directions[second]);
+		int count = 0;
+		for (int x = xPos - 1; x <= xPos + 1; x++)
+		{
+			for (int y = yPos - 1; y <= yPos + 1; y++)
+			{
+				if (tiles[x][y].tileType == tileType)
+					count++;
+			}
+		}
+		return count;
 	}
-	int repeatLastChance = std::rand() % 100;
-	if (repeatLastChance > 20)
+
+	int* LevelGenerator::populateDirections(int lastDirection)
 	{
+		int* directions = new int[4];
 		for (int i = 0; i < 4; i++)
-			if (directions[i] == lastDirection)
-				std::swap(directions[i], directions[0]);
+		{
+			directions[i] = i;
+		}
+		int first = 0;
+		int second = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			first = std::rand() % 4;
+			second = std::rand() % 4;
+			std::swap(directions[first], directions[second]);
+		}
+		int repeatLastChance = std::rand() % 100;
+		if (repeatLastChance > 20)
+		{
+			for (int i = 0; i < 4; i++)
+				if (directions[i] == lastDirection)
+					std::swap(directions[i], directions[0]);
+		}
+		return directions;
 	}
-	return directions;
-}
 
+
+}

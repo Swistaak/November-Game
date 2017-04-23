@@ -31,7 +31,7 @@ public:
 	InputSystem inputSystem;
 	CollisionSystem collisionSystem;
 	sf::View mainView;
-	float zoomRate = 3.0f;
+	float zoomRate = 1.0f;
 private:
 
 	void update();

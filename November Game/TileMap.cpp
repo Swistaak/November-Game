@@ -10,7 +10,7 @@ TileMap::TileMap(std::string levelFileName, std::string tileDataXmlFile)
 TileMap::TileMap(std::string tileDataXmlFile)
 {
 	dataManager->loadTileDataFromXML(tileDataXmlFile);
-	setMapSize(sf::Vector2i(100, 100));
+	setMapSize(sf::Vector2i(40, 40));
 	resizeTileVector(this->mapSizeInTiles);
 	for (int y = 0; y < mapSizeInTiles.y; y++)
 	{
@@ -82,36 +82,38 @@ void TileMap::setTileType(sf::Vector2f pos, int tileType)
 
 void TileMap::loadLevelFromFile(std::string levelFileName)
 {
-	levelFile.open(levelFileName);
+	sf::Image levelImage;
+	levelImage.loadFromFile(levelFileName);
+	
 	sf::Vector2i mapSize;
-	levelFile >> mapSize.x;
-	levelFile >> mapSize.y;
+	mapSize.x = levelImage.getSize().x;
+	mapSize.y = levelImage.getSize().y;
 
 	setMapSize(mapSize);
 	resizeTileVector(mapSize);
 	for (int y = 0; y < mapSizeInTiles.y; y++)
 	{
 		for (int x = 0; x < mapSizeInTiles.x; x++)
-			levelFile >> tiles[x][y];
+			tiles[x][y] = levelImage.getPixel(x, y).r;
 	}
 	levelFile.close();
 }
 
 void TileMap::saveLevelToFile(std::string levelFileName)
 {
-	std::ofstream outputLevelFile;
+	/*std::ofstream outputLevelFile;
 	outputLevelFile.open(levelFileName);
 
-	outputLevelFile << mapSizeInTiles.x << std::endl;
-	outputLevelFile << mapSizeInTiles.y << std::endl;
-
+	sf::Image image;
 	for (int y = 0; y < mapSizeInTiles.y; y++)
 	{
 		for (int x = 0; x < mapSizeInTiles.x; x++)
-			outputLevelFile << tiles[x][y] << " ";
-		outputLevelFile << std::endl;
+		{
+			sf::Color color(tiles[x][y],0,0);
+			image.setPixel(x, y, color);
+		}
 	}
-	outputLevelFile.close();
+	outputLevelFile.close();*/
 }
 
 
@@ -144,34 +146,4 @@ bool TileMap::isOutOfBounds(sf::Vector2f pos)
 	if (pos.x < 0 || pos.x >= mapSizeInPixels.x || pos.y < 0 || pos.y >= mapSizeInPixels.y)
 		return true;
 	return false;
-}
-
-std::ostream & operator<<(std::ostream & out, const TileMap & tileMap)
-{
-	out << tileMap.mapSizeInTiles.x << std::endl;
-	out << tileMap.mapSizeInTiles.y << std::endl;
-
-	for (int y = 0; y < tileMap.mapSizeInTiles.y; y++)
-	{
-		for (int x = 0; x < tileMap.mapSizeInTiles.x; x++)
-			out << tileMap.tiles[x][y] << " ";
-		out << std::endl;
-	}
-	return out;
-}
-
-std::istream & operator >> (std::istream & in, TileMap & tileMap)
-{
-	sf::Vector2i mapSize;
-	in >> mapSize.x;
-	in >> mapSize.y;
-
-	tileMap.setMapSize(mapSize);
-	tileMap.resizeTileVector(mapSize);
-	for (int y = 0; y < tileMap.mapSizeInTiles.y; y++)
-	{
-		for (int x = 0; x < tileMap.mapSizeInTiles.x; x++)
-			in >> tileMap.tiles[x][y];
-	}
-	return in;
 }
