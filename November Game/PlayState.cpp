@@ -4,10 +4,12 @@ PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
 	LevelGenerator::LevelGenerator levelGen;
-	levelGen.generateAndSave(400, 400, "outputLevel.png");
+	levelGen.generateAndSave(50, 50, "outputLevel.png");
+	std::string test;
 	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml");
-	Entity *player = entityFactory->createPlayer(sf::FloatRect(33.0f, 97.0f, 24.0f, 24.0f), "player.png", 3.0f);
+	Entity *player = entityFactory->createPlayer(sf::FloatRect(33.0f, 97.0f, 24.0f, 24.0f), "player.png", 23.0f);
 	game->entities.push_back(*player);
+
 	for (float x = 0; x < 10; x++)
 	{
 		for (int y = 0; y < 10; y++)
@@ -41,7 +43,7 @@ void PlayState::update(Game * game)
 {
 	game->collectGarbage();
 	game->collisionSystem.init(&game->entities);
-	game->collisionSystem.checkCollisions(&game->entities,this);
+	game->collisionSystem.checkCollisions(&game->entities);
 	game->updateSystem.update(&game->entities, game->mainView);
 
 }
@@ -54,9 +56,4 @@ void PlayState::draw(Game * game)
 	game->renderSystem.drawGrid(game->window);
 
 	game->renderSystem.drawEntities(game->window, &game->entities);
-}
-
-void PlayState::incrementScore(int value)
-{
-
 }

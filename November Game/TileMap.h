@@ -18,21 +18,13 @@ public:
 	void setTileType(sf::Vector2f pos, int tileType);
 	void loadLevelFromFile(std::string levelFileName);
 	void saveLevelToFile(std::string levelFileName);
-
-	friend std::ostream& operator<< (std::ostream &out, const TileMap &tileMap);
-	friend std::istream& operator >> (std::istream &in, TileMap &tileMap);
-
 	int getTileSize();
 private:
 
 	void setMapSize(sf::Vector2i sizeInTiles);
 	void resizeTileVector(sf::Vector2i newSize);
-
 	bool isOutOfBounds(sf::Vector2f pos);
-
 	std::vector<std::vector<int>> tiles;
-	std::ifstream levelFile;
-
 	sf::Vector2i mapSizeInTiles;
 	sf::Vector2i mapSizeInPixels;
 	int tileSize{ 64 };

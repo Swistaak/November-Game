@@ -96,7 +96,6 @@ void TileMap::loadLevelFromFile(std::string levelFileName)
 		for (int x = 0; x < mapSizeInTiles.x; x++)
 			tiles[x][y] = levelImage.getPixel(x, y).r;
 	}
-	levelFile.close();
 }
 
 void TileMap::saveLevelToFile(std::string levelFileName)

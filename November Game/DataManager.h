@@ -13,7 +13,5 @@ public:
 private:
 	std::map<int, TileData> tileData;
 };
-
-
 #endif
 extern DataManager* dataManager;

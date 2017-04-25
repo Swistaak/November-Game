@@ -49,20 +49,9 @@ void InputSystem::handleMouse(sf::RenderWindow &window, std::vector<Entity> *ent
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window)); 
-		//tileMap->setTileType(pos, 1);
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && debug->grid)
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		Entity *pickup = entityFactory->createPickup(sf::FloatRect(pos.x, pos.y, 20.0f, 20.0f), "pickup.bmp");
-		entities->push_back(*pickup);
-		delete pickup;
-		debug->delay(0.05f);
 	}
-}
-
-void InputSystem::jump(MoveComponent & moveComponent)
-{
-	moveComponent.isJumping = true;
-	moveComponent.mVelocity.y -= 10.0f;
 }

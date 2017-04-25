@@ -21,7 +21,6 @@ namespace LevelGenerator
 		generateMazes();
 		putWalls();
 		createConnectors();
-		
 		removeDeadEnds();
 
 	}
@@ -33,7 +32,7 @@ namespace LevelGenerator
 		{
 			for (int x = 0; x < tiles.size(); x++)
 			{
-				sf::Color color(tiles[x][y].tileType, 128, 128);
+				sf::Color color(tiles[x][y].tileType, tiles[x][y].tileType*64, tiles[x][y].tileType*64);
 				image.setPixel(x, y, color);
 			}
 		}
@@ -289,6 +288,17 @@ namespace LevelGenerator
 				}
 			}
 		}
+
+		for (int x = 0; x < levelWidth; x++)
+		{
+			for (int y = 0; y < levelHeight; y++)
+			{
+				if (tiles[x][y].tileType == DOOR && hasNeighbourCount(x, y, WALL) >= 3)
+				{
+					tiles[x][y].tileType = WALL;
+				}
+			}
+		}
 	}
 
 	int LevelGenerator::hasNeighbourCount(int xPos, int yPos, TileType tileType)
@@ -349,6 +359,7 @@ namespace LevelGenerator
 			std::swap(directions[first], directions[second]);
 		}
 		int repeatLastChance = std::rand() % 100;
+		//std::cout << repeatLastChance << std::endl;
 		if (repeatLastChance > 20)
 		{
 			for (int i = 0; i < 4; i++)

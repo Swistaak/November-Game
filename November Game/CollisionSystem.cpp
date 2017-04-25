@@ -26,7 +26,7 @@ void CollisionSystem::init(std::vector<Entity>* entities)
 	}
 }
 
-void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* playState)
+void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 {
 	for (auto &entity : *entities)
 	{
@@ -89,7 +89,6 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities, PlayState* 
 				{
 					if (entity.getTag() == GameTag::PLAYER && targetOnX->getTag() == GameTag::PICKUP)
 					{
-						playState->incrementScore(1);
 						targetOnX->deleted();
 					}
 				}

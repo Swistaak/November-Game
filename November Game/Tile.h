@@ -4,12 +4,12 @@ namespace LevelGenerator
 {
 	enum TileType
 	{
-		EMPTY = -1,
-		ROOM_FLOOR = 0,
-		WALL = 1,
-		MAZE_CORRIDOR = 2,
-		DOOR = 3,
-		DEBUG = 4,
+		EMPTY = 0,
+		ROOM_FLOOR = 1,
+		WALL = 2,
+		MAZE_CORRIDOR = 3,
+		DOOR = 4,
+		DEBUG = 5,
 		CHANGE_TO_EMPTY,
 	};
 	struct Tile

@@ -15,7 +15,7 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
 	tempEntity->addComponent(player);
-	tempEntity->addComponent(collision);
+	//tempEntity->addComponent(collision);
 
 	return tempEntity;
 

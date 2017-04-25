@@ -12,6 +12,5 @@ public:
 	void handleMouse(sf::RenderWindow &window, std::vector<Entity> *entities);
 private:
 	int playerEntity{ -1 };
-	void jump(MoveComponent &moveComponent);
 };
 #endif

@@ -3,14 +3,13 @@
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
 #include "TileMap.h"
-#include "PlayState.h"
 #include <iostream>
 #include <algorithm>
 class CollisionSystem
 {
 public:
 	void init(std::vector<Entity> *entities);
-	void checkCollisions(std::vector<Entity> *entities,PlayState* playState);
+	void checkCollisions(std::vector<Entity> *entities);
 
 private:
 	void addToBucket(int x, int y, Entity *entity);

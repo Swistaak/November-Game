@@ -14,15 +14,10 @@ void UpdateSystem::update(std::vector<Entity>* entities, sf::View &view)
 			spriteComponent->mSprite.setPosition(sf::Vector2f(transformComponent->mTransform.left, transformComponent->mTransform.top));
 
 			if (entity.getTag() == GameTag::PLAYER)
-			{
 				centerCameraOn(view, transformComponent->getPosition());
-			}
 
 			moveComponent->mVelocity.x = 0;
 			moveComponent->mVelocity.y = 0;
-			//updateVelocityOnY(*moveComponent);
-
-
 		}
 		else if (spriteComponent && transformComponent)
 		{
@@ -41,12 +36,4 @@ void UpdateSystem::centerCameraOn(sf::View & camera, sf::Vector2f pos)
 	currentCenter = camera.getCenter();
 	if (pos.y >= size.y/2.0f && pos.y <= tileMap->getSizeInPixels().y - size.y/2.0f) 
 		camera.setCenter(currentCenter.x, pos.y);
-}
-
-void UpdateSystem::updateVelocityOnY(MoveComponent & moveComponent)
-{
-	//if (moveComponent.mVelocity.y != 0)
-	//	moveComponent.isJumping = true;
-
-	//moveComponent.mVelocity.y += 0.5f;
 }
