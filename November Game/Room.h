@@ -24,6 +24,7 @@ namespace LevelGenerator
 		{
 			return roomIndex;
 		}
+
 		int x;
 		int y;
 		int w;

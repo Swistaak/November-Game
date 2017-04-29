@@ -14,11 +14,19 @@ namespace LevelGenerator
 	};
 	struct Tile
 	{
-		Tile() : region(0),tileType(EMPTY){}
+		Tile() : region(0), tileType(EMPTY) {}
 		Tile(TileType tileType, int region) : region(region), tileType(tileType) {}
 		TileType tileType;
 		int region;
 	};
+	struct GeneratorTile
+	{
+		Tile tile;
+		int entity;
+	};
+
+
+
 }
 
 
