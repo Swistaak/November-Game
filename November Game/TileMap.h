@@ -4,19 +4,18 @@
 #include "TextureManager.h"
 #include "DataManager.h"
 #include "Debug.h"
-#include <iostream>
-#include <fstream>
 #include <vector>
+#include "EntityFactory.h"
 class TileMap
 {
 public:
-	TileMap(std::string levelFileName, std::string tileDataXmlFile);
+	TileMap(std::string levelFileName, std::string tileDataXmlFile, std::vector<Entity> &entities);
 	TileMap(std::string tileDataXmlFile);
 	void draw(sf::RenderWindow &window,float zoomRate);
 	sf::Vector2i getSizeInPixels();
 	int getTileAtPos(sf::Vector2f pos);
 	void setTileType(sf::Vector2f pos, int tileType);
-	void loadLevelFromFile(std::string levelFileName);
+	void loadLevelFromFile(std::string levelFileName, std::vector<Entity> &entities);
 	void saveLevelToFile(std::string levelFileName);
 	int getTileSize();
 private:

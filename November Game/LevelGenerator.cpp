@@ -8,6 +8,7 @@ namespace LevelGenerator
 	{
 		tileMap.init(width, height);
 		generateLevel(width, height);
+		generateEntities();
 		saveLevelToFile(outputFile);
 	}
 
@@ -20,6 +21,10 @@ namespace LevelGenerator
 		mazeGenerator.removeDeadEnds(tileMap);
 
 	}
+	void LevelGenerator::generateEntities()
+	{
+		entityGenerator.generateEntities(tileMap,roomGenerator.rooms);
+	}
 	void LevelGenerator::saveLevelToFile(std::string outputFileName)
 	{
 		sf::Image image;
@@ -28,7 +33,7 @@ namespace LevelGenerator
 		{
 			for (int x = 0; x < tileMap.tiles.size(); x++)
 			{
-				sf::Color color(tileMap.tiles[x][y].tile.tileType, tileMap.tiles[x][y].tile.tileType * 64, tileMap.tiles[x][y].tile.tileType * 64);
+				sf::Color color(tileMap.tiles[x][y].tile.tileType,tileMap.tiles[x][y].entity, tileMap.tiles[x][y].tile.tileType * 64);
 				image.setPixel(x, y, color);
 			}
 		}

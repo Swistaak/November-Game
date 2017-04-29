@@ -6,19 +6,9 @@ void PlayState::init(Game *game)
 	LevelGenerator::LevelGenerator levelGen;
 	levelGen.generateAndSave(50, 50, "outputLevel.png");
 	std::string test;
-	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml");
+	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml",game->entities);
 	Entity *player = entityFactory->createPlayer(sf::FloatRect(33.0f, 97.0f, 24.0f, 24.0f), "player.png", 23.0f);
 	game->entities.push_back(*player);
-
-	for (float x = 0; x < 10; x++)
-	{
-		for (int y = 0; y < 10; y++)
-		{
-			//Entity *pickup = entityFactory->createPickup(sf::FloatRect(50 + x*50.0f, 150.0f + y*120.0f, 20.0f, 20.0f), "pickup.bmp");
-			//game->entities.push_back(*pickup);
-		}
-	
-	}
 }
 
 void PlayState::cleanup()

@@ -1,9 +1,9 @@
 #include "TileMap.h"
 TileMap* tileMap;
-TileMap::TileMap(std::string levelFileName, std::string tileDataXmlFile)
+TileMap::TileMap(std::string levelFileName, std::string tileDataXmlFile, std::vector<Entity> &entities)
 {
 	dataManager->loadTileDataFromXML(tileDataXmlFile);
-	loadLevelFromFile(levelFileName);
+	loadLevelFromFile(levelFileName,entities);
 
 }
 
@@ -80,7 +80,7 @@ void TileMap::setTileType(sf::Vector2f pos, int tileType)
 	}
 }
 
-void TileMap::loadLevelFromFile(std::string levelFileName)
+void TileMap::loadLevelFromFile(std::string levelFileName,std::vector<Entity> &entities)
 {
 	sf::Image levelImage;
 	levelImage.loadFromFile(levelFileName);
@@ -91,10 +91,18 @@ void TileMap::loadLevelFromFile(std::string levelFileName)
 
 	setMapSize(mapSize);
 	resizeTileVector(mapSize);
+	EntityFactory factory;
+	Entity* temp = nullptr;
 	for (int y = 0; y < mapSizeInTiles.y; y++)
 	{
 		for (int x = 0; x < mapSizeInTiles.x; x++)
+		{
 			tiles[x][y] = levelImage.getPixel(x, y).r;
+			temp = factory.createObjectFromTag(levelImage.getPixel(x, y).g, x*tileSize, y*tileSize);
+			if (temp != nullptr)
+			entities.push_back(*temp);
+		}
+			
 	}
 }
 

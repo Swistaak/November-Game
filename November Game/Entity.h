@@ -8,10 +8,8 @@
 #include "MoveComponent.h"
 #include "PlayerComponent.h"
 #include "CollisionComponent.h"
-enum class GameTag
-{
-	NOTAG,PLAYER,ENEMY,BULLET,PICKUP
-};
+#include "GameTag.h"
+
 class Entity
 {
 public:

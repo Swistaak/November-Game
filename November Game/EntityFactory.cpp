@@ -41,7 +41,9 @@ Entity * EntityFactory::createObject(sf::FloatRect transform, std::string textur
 Entity * EntityFactory::createPickup(sf::FloatRect transform, std::string textureName)
 {
 	Entity *tempEntity = new Entity(GameTag::PICKUP);
-
+	sf::Vector2f centeredPos = center(transform);
+	transform.left = centeredPos.x;
+	transform.top = centeredPos.y;
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
 	CollisionComponent *collision = new CollisionComponent(true);
@@ -52,4 +54,20 @@ Entity * EntityFactory::createPickup(sf::FloatRect transform, std::string textur
 	tempEntity->addComponent(collision);
 
 	return tempEntity;
+}
+
+Entity * EntityFactory::createObjectFromTag(int gameTag, int x, int y)
+{
+	Entity* temp = nullptr;
+	if (gameTag == (int)GameTag::PICKUP)
+		temp = createPickup(sf::FloatRect(x, y, 20, 20), "pickup.bmp");
+	return temp;
+}
+
+sf::Vector2f EntityFactory::center(sf::FloatRect transform)
+{
+	sf::Vector2f centerPos(transform.left +tileSize / 2, transform.top + tileSize / 2);
+	centerPos.x -= transform.width / 2;
+	centerPos.y -= transform.height / 2;
+	return centerPos;
 }
