@@ -7,8 +7,16 @@ Game::Game()
 
 void Game::run()
 {
+	sf::Clock clock;
+	float lastTime = 0;
 	while (true)
 	{
+		
+		float currentTime = clock.restart().asSeconds();
+		float fps = 1.f / currentTime;
+		lastTime = currentTime;
+		system("cls");
+		std::cout << "FPS : " << fps << std::endl;
 		
 		handleEvents();
 		update();

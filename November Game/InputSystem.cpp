@@ -18,14 +18,14 @@ void InputSystem::handleKeyboard(sf::RenderWindow &window,std::vector<Entity> *e
 	{
 		PlayerComponent *playerComponent = (*entities)[playerEntity].getComponent<PlayerComponent>();
 		MoveComponent *moveComponent = (*entities)[playerEntity].getComponent<MoveComponent>();
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
 			moveComponent->mVelocity.x -= playerComponent->mSpeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
 			moveComponent->mVelocity.x += playerComponent->mSpeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
 			moveComponent->mVelocity.y -= playerComponent->mSpeed;
 		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
 			moveComponent->mVelocity.y += playerComponent->mSpeed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();

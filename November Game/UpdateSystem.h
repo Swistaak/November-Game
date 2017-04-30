@@ -10,5 +10,6 @@ public:
 	void update(std::vector<Entity> *entities, sf::View &view);
 	void centerCameraOn(sf::View & camera, sf::Vector2f pos);
 private:
+	void changeFrame(AnimationComponent *anim, SpriteComponent *sprite, sf::Vector2f movement);
 };
 #endif

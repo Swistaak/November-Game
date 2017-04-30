@@ -11,7 +11,7 @@ void LevelGenerator::gTileMap::init(int width, int height)
 	tiles.resize(width);
 	levelWidth = width;
 	levelHeight = height;
-	for (int x = 0; x< height; x++)
+	for (int x = 0; x< width; x++)
 	{
 		tiles[x].resize(height);
 	}

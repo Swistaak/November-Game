@@ -7,14 +7,16 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0));
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
-	sprite->mSprite.setTextureRect(sf::IntRect(0.0f, 0,transform.width, transform.height));
 	PlayerComponent *player = new PlayerComponent(speed);
 	CollisionComponent *collision = new CollisionComponent(true);
-
+	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING,4,Direction::BOTTOM);
+	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
+	sprite->mSprite.setScale(2.0f,2.0f);
 	tempEntity->addComponent(move);
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
 	tempEntity->addComponent(player);
+	tempEntity->addComponent(animation);
 	//tempEntity->addComponent(collision);
 
 	return tempEntity;
@@ -46,12 +48,14 @@ Entity * EntityFactory::createPickup(sf::FloatRect transform, std::string textur
 	transform.top = centeredPos.y;
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
+	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
+	AnimationComponent *animation = new AnimationComponent(AnimationType::STATIC, 8, Direction::STATIC);
 	CollisionComponent *collision = new CollisionComponent(true);
 	collision->mPhysic = false;
-
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
 	tempEntity->addComponent(collision);
+	tempEntity->addComponent(animation);
 
 	return tempEntity;
 }
@@ -60,7 +64,9 @@ Entity * EntityFactory::createObjectFromTag(int gameTag, int x, int y)
 {
 	Entity* temp = nullptr;
 	if (gameTag == (int)GameTag::PICKUP)
-		temp = createPickup(sf::FloatRect(x, y, 20, 20), "pickup.bmp");
+		temp = createPickup(sf::FloatRect(x, y, 16, 16), "coins.png");
+	else if (gameTag == (int)GameTag::PLAYER)
+		temp = createPlayer(sf::FloatRect(x, y, 16, 16), "rogue.png", 3.0f);
 	return temp;
 }
 

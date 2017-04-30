@@ -4,11 +4,9 @@ PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
 	LevelGenerator::LevelGenerator levelGen;
-	levelGen.generateAndSave(50, 50, "outputLevel.png");
+	levelGen.generateAndSave(100, 100, "outputLevel.png");
 	std::string test;
 	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml",game->entities);
-	Entity *player = entityFactory->createPlayer(sf::FloatRect(33.0f, 97.0f, 24.0f, 24.0f), "player.png", 23.0f);
-	game->entities.push_back(*player);
 }
 
 void PlayState::cleanup()
