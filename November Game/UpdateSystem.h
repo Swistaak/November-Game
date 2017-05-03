@@ -8,8 +8,10 @@ class UpdateSystem
 {
 public:
 	void update(std::vector<Entity> *entities, sf::View &view);
+	void setVelocity(std::vector<Entity>* entities);
 	void centerCameraOn(sf::View & camera, sf::Vector2f pos);
 private:
-	void changeFrame(AnimationComponent *anim, SpriteComponent *sprite, sf::Vector2f movement);
+	void changeFrame(AnimationComponent *anim, SpriteComponent *sprite, Direction currentDirection);
+
 };
 #endif

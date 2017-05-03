@@ -255,3 +255,17 @@ ModelManifest.xml
 /November Game/ClassDiagram.cd
 /November Game/outputLevel4.png
 *.png
+*.bmp
+/November Game/ltbl/DynamicQuadtree.cpp
+/November Game/ltbl/DynamicQuadtree.h
+/November Game/ltbl/LightDirectionEmission.cpp
+/November Game/ltbl/LightDirectionEmission.h
+/November Game/ltbl/LightPointEmission.cpp
+/November Game/ltbl/LightPointEmission.h
+/November Game/ltbl/LightShape.cpp
+/November Game/ltbl/LightShape.h
+/November Game/ltbl/LightSystem.cpp
+/November Game/ltbl/LightSystem.h
+/November Game/ltbl/Math.cpp
+/November Game/ltbl/Math.h
+/November Game/ltbl/Quadtree.cpp

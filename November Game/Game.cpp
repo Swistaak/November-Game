@@ -8,19 +8,18 @@ Game::Game()
 void Game::run()
 {
 	sf::Clock clock;
-	float lastTime = 0;
 	while (true)
 	{
 		
-		float currentTime = clock.restart().asSeconds();
-		float fps = 1.f / currentTime;
-		lastTime = currentTime;
+		float currenttime = clock.restart().asSeconds();
+		float fps = 1.f / currenttime;
 		system("cls");
-		std::cout << "FPS : " << fps << std::endl;
+		std::cout << "fps : " << fps << std::endl;
 		
 		handleEvents();
 		update();
 		draw();
+		
 	}
 }
 
@@ -91,6 +90,11 @@ void Game::handleEvents()
 	{
 		if (event.type == sf::Event::Closed)
 			window.close();
+		if (event.type == sf::Event::LostFocus)
+			states.back()->pause();
+
+		if (event.type == sf::Event::GainedFocus)
+			states.back()->resume();
 	}
 
 	states.back()->handleEvents(this);

@@ -14,6 +14,7 @@ namespace LevelGenerator
 		EntityGenerator();
 		void generateEntities(gTileMap &gTileMap, std::vector<Room> rooms);
 		void generatePlayer(gTileMap &gTileMap, std::vector<Room> rooms);
+		void generateLight(gTileMap &gTileMap, std::vector<Room> rooms);
 	private:
 		std::random_device rd;
 		bool generatedPlayer = false;

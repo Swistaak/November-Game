@@ -14,10 +14,12 @@ public:
 	void draw(sf::RenderWindow &window,float zoomRate);
 	sf::Vector2i getSizeInPixels();
 	int getTileAtPos(sf::Vector2f pos);
+	int getTile(sf::Vector2i pos);
 	void setTileType(sf::Vector2f pos, int tileType);
 	void loadLevelFromFile(std::string levelFileName, std::vector<Entity> &entities);
 	void saveLevelToFile(std::string levelFileName);
 	int getTileSize();
+
 private:
 
 	void setMapSize(sf::Vector2i sizeInTiles);

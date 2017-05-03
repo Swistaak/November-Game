@@ -72,6 +72,11 @@ int TileMap::getTileAtPos(sf::Vector2f pos)
 	return tiles[pos.x / tileSize][pos.y / tileSize];
 }
 
+int TileMap::getTile(sf::Vector2i pos)
+{
+	return tiles[pos.x][pos.y];
+}
+
 void TileMap::setTileType(sf::Vector2f pos, int tileType)
 {
 	if (!isOutOfBounds(pos))
@@ -98,7 +103,7 @@ void TileMap::loadLevelFromFile(std::string levelFileName,std::vector<Entity> &e
 		for (int x = 0; x < mapSizeInTiles.x; x++)
 		{
 			tiles[x][y] = levelImage.getPixel(x, y).r;
-			temp = factory.createObjectFromTag(levelImage.getPixel(x, y).g, x*tileSize, y*tileSize);
+			temp = factory.createObjectFromTag(static_cast<GameTag>(levelImage.getPixel(x, y).g), x*tileSize, y*tileSize);
 			if (temp != nullptr)
 			entities.push_back(*temp);
 		}
@@ -129,6 +134,7 @@ int TileMap::getTileSize()
 {
 	return tileSize;
 }
+
 
 void TileMap::setMapSize(sf::Vector2i sizeInTiles)
 {

@@ -2,10 +2,6 @@
 #define ANIMATIONCOMPONENT_H
 #include "Component.h"
 #include <SFML\Graphics.hpp>
-enum class Direction
-{
-	STATIC=-1,BOTTOM,LEFT,RIGHT,TOP
-};
 enum class AnimationType
 {
 	STATIC, MOVING
@@ -13,9 +9,8 @@ enum class AnimationType
 class AnimationComponent : public Component
 {
 public:
-	AnimationComponent(AnimationType animType, int framerPerDir,Direction newDirection) {
+	AnimationComponent(AnimationType animType, int framerPerDir) {
 		animationType = animType;
-		direction = newDirection;
 		framesPerDirection = framerPerDir;
 
 	}
@@ -25,8 +20,8 @@ public:
 	float switchFrame = 100;
 	int framesPerDirection = 4;
 	int currentFrameVariant = 0;
-	Direction direction;
 	AnimationType animationType;
+	Direction lastDirection = Direction::STATIC;
 };
 
 #endif

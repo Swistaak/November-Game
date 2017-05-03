@@ -9,8 +9,7 @@ namespace LevelGenerator
 		WALL = 2,
 		MAZE_CORRIDOR = 3,
 		DOOR = 4,
-		DEBUG = 5,
-		CHANGE_TO_EMPTY,
+		CHANGE_TO_EMPTY
 	};
 	struct Tile
 	{

@@ -4,70 +4,116 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 {
 	Entity *tempEntity = new Entity(GameTag::PLAYER);
 
-	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0));
+	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),speed);
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
-	PlayerComponent *player = new PlayerComponent(speed);
 	CollisionComponent *collision = new CollisionComponent(true);
-	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING,4,Direction::BOTTOM);
+	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING,4);
 	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
 	sprite->mSprite.setScale(2.0f,2.0f);
+	trans->mTransform.width = trans->mTransform.width * 2;
+	trans->mTransform.height = trans->mTransform.height * 2;
 	tempEntity->addComponent(move);
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
-	tempEntity->addComponent(player);
 	tempEntity->addComponent(animation);
-	//tempEntity->addComponent(collision);
+	tempEntity->addComponent(collision);
 
 	return tempEntity;
 
 }
 
-Entity * EntityFactory::createObject(sf::FloatRect transform, std::string textureName)
+Entity * EntityFactory::createObject(GameTag tag,sf::FloatRect transform, std::string textureName)
 {
-	Entity *tempEntity = new Entity(GameTag::NOTAG);
+	Entity *tempEntity = new Entity(tag);
 
-	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0));
+	//center object on a tile
+	sf::Vector2f centeredPos = center(transform);
+	transform.left = centeredPos.x;
+	transform.top = centeredPos.y;
+
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
-	CollisionComponent *collision = new CollisionComponent(true);
+	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
 
-	tempEntity->addComponent(move);
 	tempEntity->addComponent(trans);
 	tempEntity->addComponent(sprite);
-	tempEntity->addComponent(collision);
 
 	return tempEntity;
 }
 
 Entity * EntityFactory::createPickup(sf::FloatRect transform, std::string textureName)
 {
-	Entity *tempEntity = new Entity(GameTag::PICKUP);
-	sf::Vector2f centeredPos = center(transform);
-	transform.left = centeredPos.x;
-	transform.top = centeredPos.y;
-	TransformComponent *trans = new TransformComponent(transform);
-	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
-	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
-	AnimationComponent *animation = new AnimationComponent(AnimationType::STATIC, 8, Direction::STATIC);
+	Entity *tempEntity = createObject(GameTag::PICKUP, transform, textureName);
+	AnimationComponent *animation = new AnimationComponent(AnimationType::STATIC, 8);
 	CollisionComponent *collision = new CollisionComponent(true);
+
 	collision->mPhysic = false;
-	tempEntity->addComponent(trans);
-	tempEntity->addComponent(sprite);
+
 	tempEntity->addComponent(collision);
 	tempEntity->addComponent(animation);
 
 	return tempEntity;
 }
 
-Entity * EntityFactory::createObjectFromTag(int gameTag, int x, int y)
+Entity * EntityFactory::createObjectFromTag(GameTag tag, int x, int y)
 {
 	Entity* temp = nullptr;
-	if (gameTag == (int)GameTag::PICKUP)
+	if (tag == GameTag::PICKUP)
 		temp = createPickup(sf::FloatRect(x, y, 16, 16), "coins.png");
-	else if (gameTag == (int)GameTag::PLAYER)
-		temp = createPlayer(sf::FloatRect(x, y, 16, 16), "rogue.png", 3.0f);
+	else if (tag == GameTag::PLAYER)
+		temp = createPlayer(sf::FloatRect(x, y, 16, 16), "rogue.png", 4.0f);
+	else if (tag == GameTag::LIGHT)
+		temp = createLight(sf::FloatRect(x, y, 20, 20), "light.bmp");
+	else if (tag == GameTag::ENEMY)
+		temp = createEnemy(sf::FloatRect(x, y, 16, 16), "warrior.png");
 	return temp;
+}
+
+Entity * EntityFactory::createLight(sf::FloatRect transform, std::string textureName)
+{
+	Entity *tempEntity = new Entity(GameTag::LIGHT);
+	sf::Vector2f centeredPos = center(transform);
+	transform.left = centeredPos.x;
+	transform.top = centeredPos.y;
+	TransformComponent *trans = new TransformComponent(transform);
+	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
+	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
+//	AnimationComponent *animation = new AnimationComponent(AnimationType::STATIC, 8, Direction::STATIC);
+	CollisionComponent *collision = new CollisionComponent(true);
+	collision->mPhysic = true;
+	tempEntity->addComponent(trans);
+	tempEntity->addComponent(sprite);
+	tempEntity->addComponent(collision);
+	//tempEntity->addComponent(animation);
+
+	return tempEntity;
+}
+
+Entity * EntityFactory::createEnemy(sf::FloatRect transform, std::string textureName)
+{
+	sf::Vector2f centeredPos = center(transform);
+	transform.left = centeredPos.x;
+	transform.top = centeredPos.y;
+	Entity *tempEntity = new Entity(GameTag::ENEMY);
+	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),2.0f);
+	TransformComponent *trans = new TransformComponent(transform);
+	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
+	CollisionComponent *collision = new CollisionComponent(true);
+	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING, 4);
+	AiComponent *ai = new AiComponent(Behavior::PATROL,State::MOVE,sf::Vector2f(transform.left,transform.top));
+	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
+	sprite->mSprite.setScale(2.0f, 2.0f);
+	trans->mTransform.width = trans->mTransform.width * 2;
+	trans->mTransform.height = trans->mTransform.height * 2;
+	tempEntity->addComponent(move);
+	tempEntity->addComponent(trans);
+	tempEntity->addComponent(sprite);
+	tempEntity->addComponent(animation);
+	tempEntity->addComponent(collision);
+	tempEntity->addComponent(ai);
+
+	return tempEntity;
 }
 
 sf::Vector2f EntityFactory::center(sf::FloatRect transform)

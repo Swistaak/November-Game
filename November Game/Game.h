@@ -4,6 +4,7 @@
 #include "RenderSystem.h"
 #include "UpdateSystem.h"
 #include "InputSystem.h"
+#include "AiSystem.h"
 #include "CollisionSystem.h"
 #include "TextureManager.h"
 #include "EntityFactory.h"
@@ -30,6 +31,7 @@ public:
 	UpdateSystem updateSystem;
 	InputSystem inputSystem;
 	CollisionSystem collisionSystem;
+	AiSystem aiSystem;
 	sf::View mainView;
 	float zoomRate = 1.0f;
 private:
@@ -40,6 +42,6 @@ private:
 	void init();
 	
 	std::vector<GameState*> states;
-
+	bool pause = false;
 	sf::Event event;
 };

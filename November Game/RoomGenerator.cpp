@@ -41,7 +41,7 @@ namespace LevelGenerator
 	{
 		std::random_device rd;
 		std::mt19937 eng(rd());
-		std::uniform_int_distribution<> distr(3, (maxRoomSize/2)-1);
+		std::uniform_int_distribution<> distr(2, (maxRoomSize/2)-1);
 		std::uniform_int_distribution<> distrLeft(0, (levelWidth - (maxRoomSize+2)) / 2);
 		std::uniform_int_distribution<> distrTop(0, (levelHeight - (maxRoomSize+2)) / 2);
 

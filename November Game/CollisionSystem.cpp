@@ -69,6 +69,7 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			tileColliding = getTileCollidingOnX(trans->mTransform, move->mVelocity.x);
 			if (tileColliding.x != 0)
 			{
+				move->mDirection = Direction::STATIC;
 				if (move->mVelocity.x > 0)
 					move->mVelocity.x = 0;//(tileColliding.x*tileMap->getTileSize()) - (trans->mTransform.left + trans->mTransform.width + 1);
 				else if (move->mVelocity.x < 0)
@@ -77,7 +78,7 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			tileColliding = getTileCollidingOnY(trans->mTransform, move->mVelocity.y);
 			if (tileColliding.y != 0)
 			{
-
+				move->mDirection = Direction::STATIC;
 				if (move->mVelocity.y > 0)
 					move->mVelocity.y = 0;//(tileColliding.y*tileMap->getTileSize()) - (trans->mTransform.top + trans->mTransform.height + 1);
 				else if (move->mVelocity.y < 0)
@@ -87,14 +88,14 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			{
 				if (&entity && targetOnX)
 				{
-					if (entity.getTag() == GameTag::PLAYER && targetOnX->getTag() == GameTag::PICKUP)
+					if (entity.getTag() == GameTag::PLAYER)// && targetOnX->getTag() == GameTag::PICKUP)
 					{
 						targetOnX->deleted();
 					}
 				}
 				if (&entity && targetOnY)
 				{
-					if (entity.getTag() == GameTag::PLAYER && targetOnY->getTag() == GameTag::PICKUP)
+					if (entity.getTag() == GameTag::PLAYER)// && targetOnY->getTag() == GameTag::PICKUP)
 					{
 						//playState->incrementScore(1);
 						targetOnY->deleted();
@@ -202,12 +203,12 @@ sf::Vector2i CollisionSystem::getTileCollidingOnX(sf::FloatRect rect, float velo
 		{
 			tilePos.y = rect.top;
 			tile = tileMap->getTileAtPos(tilePos);
-			if (tile != 0)
+			if (tile == 2)
 				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
 
 			tilePos.y = rect.top + rect.height;
 			tile = tileMap->getTileAtPos(tilePos);
-			if (tile != 0)
+			if (tile == 2)
 				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
 		}
 	return sf::Vector2i(0, 0);
@@ -228,12 +229,12 @@ sf::Vector2i CollisionSystem::getTileCollidingOnY(sf::FloatRect rect, float velo
 		{
 			tilePos.x = rect.left;
 			tile = tileMap->getTileAtPos(tilePos);
-			if (tile != 0)
+			if (tile == 2)
 				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
 
 			tilePos.x = rect.left + rect.width;
 			tile = tileMap->getTileAtPos(tilePos);
-			if (tile != 0)
+			if (tile == 2)
 				return sf::Vector2i(tilePos.x / tileSize, tilePos.y / tileSize);
 		}
 	

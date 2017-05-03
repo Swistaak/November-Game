@@ -21,6 +21,7 @@ public:
 	}
 private:
 	static PlayState mPlayState;
+	bool paused = false;
 };
 
 

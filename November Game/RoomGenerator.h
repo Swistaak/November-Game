@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 #include "gTileMap.h"
+#include <iostream>
 namespace LevelGenerator
 {
 
@@ -16,7 +17,7 @@ public:
 private:
 	bool overlapsOtherRoom(Room room);
 	void generateEmptyRooms(int levelWidth, int levelHeight, int numOfTries);
-	int maxRoomSize = 14;
+	int maxRoomSize = 10;
 };
 
 

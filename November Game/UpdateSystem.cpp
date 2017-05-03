@@ -11,21 +11,24 @@ void UpdateSystem::update(std::vector<Entity>* entities, sf::View &view)
 		if (animationComponent && spriteComponent)
 		{
 			if (moveComponent) //Animation on moving object
-				changeFrame(animationComponent, spriteComponent, moveComponent->mVelocity);
+				changeFrame(animationComponent, spriteComponent, moveComponent->mDirection);
 			else //Animation on static object
-				changeFrame(animationComponent, spriteComponent, sf::Vector2f(0,0));
+				changeFrame(animationComponent, spriteComponent, Direction::STATIC);
 		}
 		if (spriteComponent && moveComponent && transformComponent )
 		{
+
 			transformComponent->mTransform.left += moveComponent->mVelocity.x;
 			transformComponent->mTransform.top += moveComponent->mVelocity.y;
 			spriteComponent->mSprite.setPosition(sf::Vector2f(transformComponent->mTransform.left, transformComponent->mTransform.top));
 
 			if (entity.getTag() == GameTag::PLAYER)
+			{
 				centerCameraOn(view, transformComponent->getPosition());
-
-			moveComponent->mVelocity.x = 0;
-			moveComponent->mVelocity.y = 0;
+				moveComponent->mDirection = Direction::STATIC;
+			}
+			
+			
 		}
 		else if (spriteComponent && transformComponent)
 		{
@@ -44,41 +47,46 @@ void UpdateSystem::centerCameraOn(sf::View & camera, sf::Vector2f pos)
 	if (pos.y >= size.y/2.0f && pos.y <= tileMap->getSizeInPixels().y - size.y/2.0f) 
 		camera.setCenter(currentCenter.x, pos.y);
 }
-
-void UpdateSystem::changeFrame(AnimationComponent *anim, SpriteComponent *sprite, sf::Vector2f movement)
+void UpdateSystem::setVelocity(std::vector<Entity>* entities)
 {
-	Direction nextFrame;
-	if (movement.y == 0 && movement.x == 0)
-		nextFrame = Direction::STATIC;
-	else if (movement.y > 0)
-		nextFrame = Direction::BOTTOM;
-	else if (movement.y < 0)
-		nextFrame = Direction::TOP;
-	else if (movement.x > 0)
-		nextFrame = Direction::RIGHT;
-	else if (movement.x < 0)
-		nextFrame = Direction::LEFT;
+	for (auto &entity : *entities)
+	{
+		MoveComponent* move = entity.getComponent<MoveComponent>();
+		if (move)
+		{
+			Direction direction = move->mDirection;
+			if (direction == Direction::LEFT)
+				move->mVelocity = sf::Vector2f(-move->mSpeed, 0);
+			else if (direction == Direction::RIGHT)
+				move->mVelocity = sf::Vector2f(move->mSpeed, 0);
+			else if (direction == Direction::TOP)
+				move->mVelocity = sf::Vector2f(0, -move->mSpeed);
+			else if (direction == Direction::BOTTOM)
+				move->mVelocity = sf::Vector2f(0, move->mSpeed);
+			else if (direction == Direction::STATIC)
+				move->mVelocity = sf::Vector2f(0, 0);
+		}
+	}
+}
 
+void UpdateSystem::changeFrame(AnimationComponent *anim, SpriteComponent *sprite, Direction currentDirection)
+{
+	//To do - clean up this code, fix delay
 	anim->frameCounter += anim->frameSpeed * anim->animationClock.restart().asSeconds();
 	sf::FloatRect size = sprite->mSprite.getLocalBounds();
-	if (anim->frameCounter >= anim->switchFrame || anim->direction != nextFrame)
+	if (anim->frameCounter >= anim->switchFrame)// || currentDirecti!= nextFrame)
 	{
 		if (anim->animationType == AnimationType::MOVING)
 		{
 			//Entity continues moving in same direction
-			if (anim->direction == nextFrame)
+			if (currentDirection != Direction::STATIC)//anim->direction == nextFrame)
 			{
 				anim->currentFrameVariant++;
 				if (anim->currentFrameVariant >= anim->framesPerDirection)
 					anim->currentFrameVariant = 0;
-				sprite->setTextureRect(sf::IntRect(anim->currentFrameVariant*size.width, (int)anim->direction*size.width, size.width, size.height));
+				sprite->setTextureRect(sf::IntRect(anim->currentFrameVariant*size.width, (int)currentDirection*size.width, size.width, size.height));
 			}
-			else if (nextFrame != Direction::STATIC)
-			{
-				anim->currentFrameVariant = 0;
-				anim->direction = nextFrame;
-				sprite->setTextureRect(sf::IntRect(anim->currentFrameVariant*size.width, (int)anim->direction*size.width, size.width, size.height));
-			}
+
 		}
 		else if (anim->animationType == AnimationType::STATIC)
 		{
@@ -91,3 +99,4 @@ void UpdateSystem::changeFrame(AnimationComponent *anim, SpriteComponent *sprite
 	}
 	
 }
+

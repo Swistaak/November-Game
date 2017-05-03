@@ -2,7 +2,7 @@
 #define GAMETAG_H
 enum class GameTag
 {
-	NOTAG, PLAYER, ENEMY, BULLET, PICKUP
+	NOTAG, PLAYER, ENEMY, BULLET, PICKUP,LIGHT
 };
 
 #endif
