@@ -7,9 +7,25 @@
 class TransformComponent : public Component
 {
 public:
-	sf::Vector2f getPosition() { return sf::Vector2f(mTransform.left, mTransform.top); }
-	void setPosition(sf::Vector2f pos) { mTransform.left = pos.x; mTransform.top = pos.y; }
-	TransformComponent(sf::FloatRect transform) { mTransform = transform; }
+	TransformComponent(sf::FloatRect transform) : mTransform{ transform } {};
+	sf::Vector2f getPosition() 
+	{ 
+		return sf::Vector2f(mTransform.left, mTransform.top); 
+	}
+	void setPosition(sf::Vector2f pos) 
+	{ 
+		mTransform.left = pos.x; mTransform.top = pos.y; 
+	}
+	sf::Vector2f getSize()
+	{
+		return sf::Vector2f(mTransform.width, mTransform.height);
+	}
+	void setSize(sf::Vector2f size)
+	{
+		mTransform.width = size.x;
+		mTransform.height = size.y;
+	}
+
 	sf::FloatRect mTransform{ 0,0,0,0 };
 };
 

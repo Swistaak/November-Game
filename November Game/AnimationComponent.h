@@ -2,26 +2,30 @@
 #define ANIMATIONCOMPONENT_H
 #include "Component.h"
 #include <SFML\Graphics.hpp>
-enum class AnimationType
-{
-	STATIC, MOVING
-};
 class AnimationComponent : public Component
 {
 public:
-	AnimationComponent(AnimationType animType, int framerPerDir) {
-		animationType = animType;
-		framesPerDirection = framerPerDir;
+	AnimationComponent(int framesPerDir) : framesPerDirection{ framesPerDir } {};
 
+	int getCurrentFrameVariant() 
+	{
+		return mCurrentFrameVariant;
 	}
+
+	void incrementFrameVariant()
+	{
+		mCurrentFrameVariant++;
+		if (mCurrentFrameVariant >= framesPerDirection)
+			mCurrentFrameVariant = 0;
+	}
+
 	sf::Clock animationClock;
 	float frameCounter = 0;
 	float frameSpeed = 500;
 	float switchFrame = 100;
-	int framesPerDirection = 4;
-	int currentFrameVariant = 0;
-	AnimationType animationType;
-	Direction lastDirection = Direction::STATIC;
-};
+private:
 
+	int framesPerDirection = 4;
+	int mCurrentFrameVariant = 0;
+};
 #endif

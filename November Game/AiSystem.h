@@ -15,16 +15,21 @@ struct pNode
 class AiSystem
 {
 public:
+	AiSystem();
 	void updateAi(std::vector<Entity> *entities, sf::RenderWindow &window);
 private:
-	float getSquareDistanceBetweenPoints(sf::Vector2f point1, sf::Vector2f point2);
+	void cachePlayer(std::vector<Entity> *entities);
+	void moveAlongPath(Entity * entity);
+	float getDistance(sf::Vector2f point1, sf::Vector2f point2);
 	std::list<sf::Vector2i> getPathBetween(sf::Vector2f source, sf::Vector2f target);
 	std::list<pNode> getNeighbourNodes(sf::Vector2i tile, const std::list<pNode> &closedList);
+
 	void setCost(sf::Vector2i source, sf::Vector2i target, std::list<pNode> &neighbours);
 	int playerEntity = -1;
 	sf::Clock aiClock;
 	float clockUpdate;
-	bool test = true;
+	const int MAXCOST = 6000;
+
 };
 
 

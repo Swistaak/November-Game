@@ -11,7 +11,10 @@ void RenderSystem::drawEntities(sf::RenderWindow &window,std::vector<Entity> *en
 		SpriteComponent *spriteComponent = entity.getComponent<SpriteComponent>();
 		sf::Vector2f pos = entity.getComponent<TransformComponent>()->getPosition();
 		sf::Vector2f viewCenter = window.getView().getCenter();
-		if (spriteComponent && pos.x > viewCenter.x - 400 && pos.x < viewCenter.x + 400 && pos.y > viewCenter.y - 400 && pos.y < viewCenter.y + 400)
+		sf::Vector2u halfWindowSize = window.getSize();
+		halfWindowSize.x /= 2;
+		halfWindowSize.y /= 2;
+		if (spriteComponent && pos.x > viewCenter.x - halfWindowSize.x && pos.x < viewCenter.x + halfWindowSize.x && pos.y > viewCenter.y - halfWindowSize.y && pos.y < viewCenter.y + halfWindowSize.y)
 		{
 			window.draw(spriteComponent->mSprite);
 		}
@@ -21,6 +24,10 @@ void RenderSystem::drawEntities(sf::RenderWindow &window,std::vector<Entity> *en
 		}
 			
 	}
+
+
+
+	//debugDrawPath(window, entities);
 
 }
 
@@ -44,5 +51,30 @@ void RenderSystem::drawGrid(sf::RenderWindow & window)
 	{
 		line.setPosition(i * 64.0f, 0);
 		window.draw(line);
+	}
+
+
+}
+
+void RenderSystem::debugDrawPath(sf::RenderWindow & window, std::vector<Entity>* entities)
+{
+	for (auto &entity : *entities)
+	{
+
+		MoveComponent *move = entity.getComponent<MoveComponent>();
+		if (move)
+		{
+			if (move->path.size() != 0)
+			{
+				for (auto it = move->path.begin(); it != move->path.end(); it++)
+				{
+					sf::RectangleShape rect;
+					rect.setSize(sf::Vector2f(64, 64));
+					rect.setPosition(it->x * 64, it->y * 64);
+					rect.setFillColor(sf::Color::Red);
+					window.draw(rect);
+				}
+			}
+		}
 	}
 }

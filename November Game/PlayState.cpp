@@ -4,7 +4,7 @@ PlayState PlayState::mPlayState;
 void PlayState::init(Game *game)
 {
 	LevelGenerator::LevelGenerator levelGen;
-	levelGen.generateAndSave(40, 40, "outputLevel.png");
+	//levelGen.generateAndSave(40, 40, "outputLevel.png");
 	tileMap = new TileMap("outputLevel.png","tiles_spritesheet.xml",game->entities);
 }
 

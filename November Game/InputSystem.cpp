@@ -22,10 +22,20 @@ void InputSystem::handleKeyboard(sf::RenderWindow &window,std::vector<Entity> *e
 			move->mDirection = Direction::TOP;
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
 			move->mDirection = Direction::BOTTOM;
-		else
-			move->mDirection = Direction::STATIC;
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			AttackComponent *attack = (*entities)[playerEntity].getComponent<AttackComponent>();
+			attack->attackCounter += attack->attackClock.restart().asMilliseconds();
+			if (attack->attackCounter >= attack->attackDelay)
+			{
+					attack->mShot = true;
+					attack->attackCounter = 0;
+			}
+		
+		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 			tileMap->saveLevelToFile("outputLevel.txt");
@@ -46,13 +56,10 @@ void InputSystem::handleMouse(sf::RenderWindow &window, std::vector<Entity> *ent
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window)); 
-		std::cout << "Click at " << pos.x / 64 << " " << pos.y / 64 << std::endl;
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 	{
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		Entity* entity = entityFactory->createEnemy(sf::FloatRect(pos.x, pos.y, 16, 16), "Warrior.png");
-		entities->push_back(*entity);
-		debug->delay(0.5f);
+
 	}
 }

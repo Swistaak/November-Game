@@ -65,6 +65,11 @@ sf::Vector2i TileMap::getSizeInPixels()
 	return mapSizeInPixels;
 }
 
+sf::Vector2i TileMap::getSizeInTiles()
+{
+	return mapSizeInTiles;
+}
+
 int TileMap::getTileAtPos(sf::Vector2f pos)
 {
 	if (isOutOfBounds(pos))

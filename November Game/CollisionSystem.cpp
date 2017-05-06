@@ -88,14 +88,14 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			{
 				if (&entity && targetOnX)
 				{
-					if (entity.getTag() == GameTag::PLAYER)// && targetOnX->getTag() == GameTag::PICKUP)
+					if (entity.getTag() == GameTag::PLAYER && targetOnX->getTag() == GameTag::PICKUP)
 					{
 						targetOnX->deleted();
 					}
 				}
 				if (&entity && targetOnY)
 				{
-					if (entity.getTag() == GameTag::PLAYER)// && targetOnY->getTag() == GameTag::PICKUP)
+					if (entity.getTag() == GameTag::PLAYER && targetOnY->getTag() == GameTag::PICKUP)
 					{
 						//playState->incrementScore(1);
 						targetOnY->deleted();

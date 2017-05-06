@@ -25,7 +25,7 @@ namespace LevelGenerator
 	{
 		entityGenerator.generateEntities(tileMap,roomGenerator.rooms);
 		entityGenerator.generatePlayer(tileMap, roomGenerator.rooms);
-		//entityGenerator.generateLight(tileMap, roomGenerator.rooms);
+		entityGenerator.generateEnemy(tileMap, roomGenerator.rooms);
 	}
 	void LevelGenerator::saveLevelToFile(std::string outputFileName)
 	{

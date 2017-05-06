@@ -6,7 +6,8 @@
 class MoveComponent : public Component
 {
 public:
-	MoveComponent(sf::Vector2f velocity, float speed) { mVelocity = velocity;  mSpeed = speed; }
+	MoveComponent(sf::Vector2f velocity, float speed, Direction direction) : mVelocity{ velocity }, mSpeed{ speed }, mDirection{direction} {};
+
 	sf::Vector2f mVelocity{ 0,0 };
 	Direction mDirection = Direction::STATIC;
 	float mSpeed;

@@ -12,6 +12,7 @@ public:
 	void centerCameraOn(sf::View & camera, sf::Vector2f pos);
 private:
 	void changeFrame(AnimationComponent *anim, SpriteComponent *sprite, Direction currentDirection);
+	Entity* createBullet(Entity *entity);
 
 };
 #endif

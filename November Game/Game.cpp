@@ -13,8 +13,8 @@ void Game::run()
 		
 		float currenttime = clock.restart().asSeconds();
 		float fps = 1.f / currenttime;
-		system("cls");
-		std::cout << "fps : " << fps << std::endl;
+		//system("cls");
+		//std::cout << "fps : " << fps << std::endl;
 		
 		handleEvents();
 		update();
@@ -104,9 +104,9 @@ void Game::init()
 {
 
 
-	window.create(sf::VideoMode(800, 600), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
+	window.create(sf::VideoMode(1024, 800), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
-	mainView.setSize(800, 600);
+	mainView.setSize(1024, 800);
 	mainView.zoom(zoomRate);
 	mainView.setCenter(400*zoomRate, 300*zoomRate);
 	window.setView(mainView);

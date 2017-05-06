@@ -54,7 +54,7 @@ void LevelGenerator::EntityGenerator::generatePlayer(gTileMap & gTileMap, std::v
 	}
 }
 
-void LevelGenerator::EntityGenerator::generateLight(gTileMap & gTileMap, std::vector<Room> rooms)
+void LevelGenerator::EntityGenerator::generateEnemy(gTileMap & gTileMap, std::vector<Room> rooms)
 {
 	bool test = true;
 	std::mt19937 eng(rd());

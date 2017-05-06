@@ -4,11 +4,12 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 {
 	Entity *tempEntity = new Entity(GameTag::PLAYER);
 
-	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),speed);
+	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),speed,Direction::STATIC);
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
 	CollisionComponent *collision = new CollisionComponent(true);
-	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING,4);
+	AnimationComponent *animation = new AnimationComponent(4);
+	AttackComponent* attack = new AttackComponent();
 	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
 	sprite->mSprite.setScale(2.0f,2.0f);
 	trans->mTransform.width = trans->mTransform.width * 2;
@@ -18,19 +19,24 @@ Entity * EntityFactory::createPlayer(sf::FloatRect transform, std::string textur
 	tempEntity->addComponent(sprite);
 	tempEntity->addComponent(animation);
 	tempEntity->addComponent(collision);
+	tempEntity->addComponent(attack);
 
 	return tempEntity;
 
 }
 
-Entity * EntityFactory::createObject(GameTag tag,sf::FloatRect transform, std::string textureName)
+Entity * EntityFactory::createObject(GameTag tag,sf::FloatRect transform, std::string textureName , bool centered)
 {
 	Entity *tempEntity = new Entity(tag);
 
 	//center object on a tile
-	sf::Vector2f centeredPos = center(transform);
+	if (centered)
+	{
+		sf::Vector2f centeredPos = center(transform);
 	transform.left = centeredPos.x;
 	transform.top = centeredPos.y;
+	}
+
 
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
@@ -44,8 +50,8 @@ Entity * EntityFactory::createObject(GameTag tag,sf::FloatRect transform, std::s
 
 Entity * EntityFactory::createPickup(sf::FloatRect transform, std::string textureName)
 {
-	Entity *tempEntity = createObject(GameTag::PICKUP, transform, textureName);
-	AnimationComponent *animation = new AnimationComponent(AnimationType::STATIC, 8);
+	Entity *tempEntity = createObject(GameTag::PICKUP, transform, textureName,true);
+	AnimationComponent *animation = new AnimationComponent(8);
 	CollisionComponent *collision = new CollisionComponent(true);
 
 	collision->mPhysic = false;
@@ -96,12 +102,13 @@ Entity * EntityFactory::createEnemy(sf::FloatRect transform, std::string texture
 	transform.left = centeredPos.x;
 	transform.top = centeredPos.y;
 	Entity *tempEntity = new Entity(GameTag::ENEMY);
-	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),2.0f);
+	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0),2.0f,Direction::STATIC);
 	TransformComponent *trans = new TransformComponent(transform);
 	SpriteComponent *sprite = new SpriteComponent(textureManager->getTexture(textureName));
 	CollisionComponent *collision = new CollisionComponent(true);
-	AnimationComponent *animation = new AnimationComponent(AnimationType::MOVING, 4);
-	AiComponent *ai = new AiComponent(Behavior::PATROL,State::MOVE,sf::Vector2f(transform.left,transform.top));
+	AnimationComponent *animation = new AnimationComponent(4);
+	AiComponent *ai = new AiComponent(Behavior::GUARD,State::SEEK,sf::Vector2f(transform.left,transform.top));
+	ai->reactionDistance = 400;
 	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
 	sprite->mSprite.setScale(2.0f, 2.0f);
 	trans->mTransform.width = trans->mTransform.width * 2;
@@ -113,6 +120,16 @@ Entity * EntityFactory::createEnemy(sf::FloatRect transform, std::string texture
 	tempEntity->addComponent(collision);
 	tempEntity->addComponent(ai);
 
+	return tempEntity;
+}
+
+Entity * EntityFactory::createBullet(sf::FloatRect transform, std::string textureName, float speed, Direction direction)
+{
+	Entity *tempEntity = createObject(GameTag::BULLET, transform, textureName,false);
+	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0), speed,direction);
+	CollisionComponent *collision = new CollisionComponent(true);
+	tempEntity->addComponent(move);
+	tempEntity->addComponent(collision);
 	return tempEntity;
 }
 

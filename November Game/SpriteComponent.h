@@ -5,9 +5,12 @@
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(sf::Texture &texture) { 
-		mSprite.setTexture(texture); }
-	void setTextureRect(sf::IntRect newTextRect) {
+	SpriteComponent(sf::Texture &texture)
+	{ 
+		mSprite.setTexture(texture); 
+	}
+	void setTextureRect(sf::IntRect newTextRect)
+	{
 		mSprite.setTextureRect(newTextRect);
 	}
 	sf::Sprite mSprite;

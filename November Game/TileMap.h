@@ -13,6 +13,7 @@ public:
 	TileMap(std::string tileDataXmlFile);
 	void draw(sf::RenderWindow &window,float zoomRate);
 	sf::Vector2i getSizeInPixels();
+	sf::Vector2i getSizeInTiles();
 	int getTileAtPos(sf::Vector2f pos);
 	int getTile(sf::Vector2i pos);
 	void setTileType(sf::Vector2f pos, int tileType);

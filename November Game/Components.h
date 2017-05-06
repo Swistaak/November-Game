@@ -1,0 +1,7 @@
+#include "SpriteComponent.h"
+#include "TransformComponent.h"
+#include "MoveComponent.h"
+#include "CollisionComponent.h"
+#include "AnimationComponent.h"
+#include "AiComponent.h"
+#include "AttackComponent.h"

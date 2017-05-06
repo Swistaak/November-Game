@@ -12,5 +12,6 @@ public:
 	RenderSystem();
 	void drawEntities(sf::RenderWindow &window, std::vector<Entity> *entities);
 	void drawGrid(sf::RenderWindow &window);
+	void debugDrawPath(sf::RenderWindow &window, std::vector<Entity> *entities);
 };
 #endif

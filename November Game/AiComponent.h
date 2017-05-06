@@ -3,7 +3,7 @@
 #include "Component.h"
 enum class Behavior
 {
-	PATROL
+	GUARD
 };
 enum class State
 {
@@ -12,23 +12,27 @@ enum class State
 class AiComponent : public Component
 {
 public:
-	AiComponent(Behavior behavior, State state, sf::Vector2f origin) {
-		mBehavior = behavior; mState = state; mOrigin = origin;
-	}
-	Behavior getBehavior() {
+	AiComponent(Behavior behavior, State state, sf::Vector2f origin) : mBehavior{ behavior }, mState{ state }, mOrigin{origin} {};
+
+	Behavior getBehavior() 
+	{
 		return mBehavior;
 	}
-	void setState(State state) {
+	void setState(State state) 
+	{
 		mState = state;
 	}
-	State getState() {
+	State getState() 
+	{
 		return mState;
 	}
-	sf::Vector2f getOrigin() {
+	sf::Vector2f getOrigin() 
+	{
 		return mOrigin;
 	}
-	float reactionSquareDistance = 400;
+	float reactionDistance = 64;
 private:
+
 	Behavior mBehavior;
 	State mState;
 	sf::Vector2f mOrigin;
