@@ -108,7 +108,7 @@ Entity * EntityFactory::createEnemy(sf::FloatRect transform, std::string texture
 	CollisionComponent *collision = new CollisionComponent(true);
 	AnimationComponent *animation = new AnimationComponent(4);
 	AiComponent *ai = new AiComponent(Behavior::GUARD,State::SEEK,sf::Vector2f(transform.left,transform.top));
-	ai->reactionDistance = 400;
+	ai->reactionDistance = 300;
 	sprite->setTextureRect(sf::IntRect(0, 0, transform.width, transform.height));
 	sprite->mSprite.setScale(2.0f, 2.0f);
 	trans->mTransform.width = trans->mTransform.width * 2;
@@ -127,7 +127,8 @@ Entity * EntityFactory::createBullet(sf::FloatRect transform, std::string textur
 {
 	Entity *tempEntity = createObject(GameTag::BULLET, transform, textureName,false);
 	MoveComponent *move = new MoveComponent(sf::Vector2f(0, 0), speed,direction);
-	CollisionComponent *collision = new CollisionComponent(true);
+	CollisionComponent *collision = new CollisionComponent(false);
+	move->mMoving = true;
 	tempEntity->addComponent(move);
 	tempEntity->addComponent(collision);
 	return tempEntity;

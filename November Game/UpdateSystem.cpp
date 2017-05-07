@@ -55,7 +55,7 @@ void UpdateSystem::setVelocity(std::vector<Entity>* entities)
 	for (auto &entity : *entities)
 	{
 		MoveComponent* move = entity.getComponent<MoveComponent>();
-		if (move)
+		if (move && move->mMoving)
 		{
 			Direction direction = move->mDirection;
 			if (direction == Direction::LEFT)
@@ -66,8 +66,10 @@ void UpdateSystem::setVelocity(std::vector<Entity>* entities)
 				move->mVelocity = sf::Vector2f(0, -move->mSpeed);
 			else if (direction == Direction::BOTTOM)
 				move->mVelocity = sf::Vector2f(0, move->mSpeed);
-			else if (direction == Direction::STATIC)
-				move->mVelocity = sf::Vector2f(0, 0);
+		}
+		else if (move && !move->mMoving)
+		{
+			move->mVelocity = sf::Vector2f(0, 0);
 		}
 	}
 }

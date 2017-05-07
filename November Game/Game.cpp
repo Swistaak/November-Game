@@ -13,8 +13,8 @@ void Game::run()
 		
 		float currenttime = clock.restart().asSeconds();
 		float fps = 1.f / currenttime;
-		//system("cls");
-		//std::cout << "fps : " << fps << std::endl;
+		system("cls");
+		std::cout << "fps : " << fps << std::endl;
 		
 		handleEvents();
 		update();

@@ -11,6 +11,12 @@ public:
 	void handleKeyboard(sf::RenderWindow &window,std::vector<Entity> *entities);
 	void handleMouse(sf::RenderWindow &window, std::vector<Entity> *entities);
 private:
-	int playerEntity{ -1 };
+	void move();
+	void attack();
+	void cachePlayer(std::vector<Entity> *entities);
+	AttackComponent *playerAttackComponent;
+	MoveComponent *playerMoveComponent;
+	bool cachedPlayer = false;
+
 };
 #endif

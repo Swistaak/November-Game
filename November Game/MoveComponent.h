@@ -11,6 +11,7 @@ public:
 	sf::Vector2f mVelocity{ 0,0 };
 	Direction mDirection = Direction::STATIC;
 	float mSpeed;
+	bool mMoving = false;
 	std::list<sf::Vector2i> path;
 };
 

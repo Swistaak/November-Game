@@ -38,11 +38,12 @@ void PlayState::update(Game * game)
 	if (!paused)
 	{
 		game->collectGarbage();
-		game->aiSystem.updateAi(&game->entities,game->window);
+		game->aiSystem.updateAi(&game->entities, game->window);
 		game->updateSystem.setVelocity(&game->entities);
 		game->collisionSystem.init(&game->entities);
 		game->collisionSystem.checkCollisions(&game->entities);
 		game->updateSystem.update(&game->entities, game->mainView);
+
 	}
 
 }
@@ -55,4 +56,5 @@ void PlayState::draw(Game * game)
 	game->renderSystem.drawGrid(game->window);
 
 	game->renderSystem.drawEntities(game->window, &game->entities);
+
 }
