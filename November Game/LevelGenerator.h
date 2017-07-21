@@ -12,6 +12,7 @@ namespace LevelGenerator
 	public:
 		LevelGenerator();
 		void generateAndSave(int width, int height, std::string outputFile);
+		int getCoinsCount();
 	private:
 		void generateLevel(int width, int height);
 		void generateEntities();
@@ -20,6 +21,7 @@ namespace LevelGenerator
 		RoomGenerator roomGenerator;
 		MazeGenerator mazeGenerator;
 		EntityGenerator entityGenerator;
+		int coinsCount = 0;
 	};
 }
 

@@ -14,10 +14,11 @@ public:
 	void generateRooms(int levelWidth, int levelHeight, int maxTries);
 	void insertRoomsIntoTilemap(gTileMap &gTileMap);
 	std::vector<Room> rooms;
+	void removeRoomsWithoutConnectors(gTileMap &gTileMap);
 private:
 	bool overlapsOtherRoom(Room room);
 	void generateEmptyRooms(int levelWidth, int levelHeight, int numOfTries);
-	int maxRoomSize = 10;
+	int maxRoomSize = 6;
 };
 
 

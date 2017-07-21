@@ -38,9 +38,11 @@ namespace LevelGenerator
 			return false;
 		}
 		std::vector<int> connectors;
-
+		bool deleted = false;
+		bool spawn = false;
 	private:
 		int roomIndex;
+
 
 	};
 }

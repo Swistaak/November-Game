@@ -5,3 +5,5 @@
 #include "AnimationComponent.h"
 #include "AiComponent.h"
 #include "AttackComponent.h"
+#include "HealthComponent.h"
+#include "SoundComponent.h"

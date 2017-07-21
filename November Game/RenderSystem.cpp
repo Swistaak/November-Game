@@ -35,21 +35,21 @@ void RenderSystem::drawGrid(sf::RenderWindow & window)
 {
 	int windowWidth = 800;
 	int windowHeight = 600;
-	int cellSize = 64;
+	int cellSize = 32;
 	sf::RectangleShape line(sf::Vector2f(1000000, 1));
 	line.setFillColor(sf::Color::Red);
 	sf::View view = window.getView();
 	sf::Vector2f center = view.getCenter();
 	for (float i = floor((center.y - (windowHeight >> 1)) / cellSize); i < floor((center.y + (windowHeight >> 1)) / cellSize) + 5; i++)
 	{
-		line.setPosition(0, i * 64.0f);
+		line.setPosition(0, i * 32.0f);
 		window.draw(line);
 	}
 
 	line.setSize(sf::Vector2f(1, 1000000));
 	for (float i = floor((center.x-(windowWidth>>1))/cellSize); i < floor((center.x + (windowWidth>>1)) / cellSize)+5; i++)
 	{
-		line.setPosition(i * 64.0f, 0);
+		line.setPosition(i * 32.0f, 0);
 		window.draw(line);
 	}
 

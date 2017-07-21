@@ -9,12 +9,12 @@ void InputSystem::handleKeyboard(sf::RenderWindow &window, std::vector<Entity> *
 		{
 			move();
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
 				window.close();
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
 				attack();
-
-
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
@@ -45,28 +45,41 @@ void InputSystem::handleMouse(sf::RenderWindow &window, std::vector<Entity> *ent
 
 void InputSystem::move()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
+	Direction currentDirection = playerMoveComponent->mDirection;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))// && !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
 	{
 		playerMoveComponent->mMoving = true;
 		playerMoveComponent->mDirection = Direction::LEFT;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) )//&& !(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
 	{
 		playerMoveComponent->mMoving = true;
 		playerMoveComponent->mDirection = Direction::RIGHT;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))// && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
 	{
 		playerMoveComponent->mMoving = true;
 		playerMoveComponent->mDirection = Direction::TOP;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))) 
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))// && !(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))) 
 	{
 		playerMoveComponent->mMoving = true;
 		playerMoveComponent->mDirection = Direction::BOTTOM;
 	}
 	else
 		playerMoveComponent->mMoving = false;
+
+	if (playerMoveComponent->mMoving)
+		soundData->playSound("walk.wav");
+	if (currentDirection != playerMoveComponent->mDirection)
+	{
+		playerMoveComponent->mChangedDirection = true;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
+	{
+		std::cout << playerTransformComponent->getPosition().x << " " << playerTransformComponent->getPosition().y << std::endl;
+		debug->delay(0.01f);
+	}
 }
 
 void InputSystem::attack()
@@ -87,6 +100,7 @@ void InputSystem::cachePlayer(std::vector<Entity>* entities)
 		{
 			playerAttackComponent = (*entities)[i].getComponent<AttackComponent>();
 			playerMoveComponent = (*entities)[i].getComponent<MoveComponent>();
+			playerTransformComponent = (*entities)[i].getComponent<TransformComponent>();
 			break;
 		}
 	}

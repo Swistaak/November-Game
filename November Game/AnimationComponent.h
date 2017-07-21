@@ -23,6 +23,7 @@ public:
 	float frameCounter = 0;
 	float frameSpeed = 500;
 	float switchFrame = 100;
+
 private:
 
 	int framesPerDirection = 4;

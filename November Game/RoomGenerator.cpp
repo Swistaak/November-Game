@@ -27,6 +27,33 @@ namespace LevelGenerator
 		}
 	}
 
+	void RoomGenerator::removeRoomsWithoutConnectors(gTileMap &gTileMap)
+	{
+		for (auto it = rooms.begin(); it != rooms.end(); it++)
+		{
+			if (it->connectors.size() == 0)
+			{
+				for (int x = it->x; x != it->x + it->w; x++)
+				{
+					for (int y = it->y; y != it->y + it->h; y++)
+					{
+						gTileMap.tiles[x][y].tile = Tile(WALL, 0);
+					}
+				}
+				it->deleted = true;
+			}
+			
+		}
+		for (int i = 0; i < rooms.size(); i++)
+		{
+			if (rooms[i].deleted)
+			{
+				rooms[i] =  std::move(rooms.back());
+				rooms.pop_back();
+			}
+		}
+	}
+
 	bool RoomGenerator::overlapsOtherRoom(Room room)
 	{
 		for (auto it = rooms.begin(); it != rooms.end(); it++)

@@ -30,7 +30,10 @@ public:
 			components.erase(&typeid(T));
 	}
 	void deleted();
-	bool getDeleted() { return mDeleted; }
+	bool isDeleted()
+	{ 
+		return mDeleted;
+	}
 	friend bool operator==(const Entity &en1, const Entity &en2);
 private:
 	std::unordered_map<const std::type_info*, Component*> components;

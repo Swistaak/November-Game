@@ -26,7 +26,7 @@ void CollisionSystem::init(std::vector<Entity>* entities)
 	}
 }
 
-void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
+void CollisionSystem::checkCollisions(std::vector<Entity>* entities, GameData &gameData)
 {
 	for (auto &entity : *entities)
 	{
@@ -69,38 +69,27 @@ void CollisionSystem::checkCollisions(std::vector<Entity>* entities)
 			tileColliding = getTileCollidingOnX(trans->mTransform, move->mVelocity.x);
 			if (tileColliding.x != 0)
 			{
-				move->mDirection = Direction::STATIC;
+				handleCollisionWithTile(&entity);
 				if (move->mVelocity.x > 0)
-					move->mVelocity.x = 0;//(tileColliding.x*tileMap->getTileSize()) - (trans->mTransform.left + trans->mTransform.width + 1);
+					move->mVelocity.x = (tileColliding.x*tileMap->getTileSize()) - (trans->mTransform.left + trans->mTransform.width + 1);
 				else if (move->mVelocity.x < 0)
-					move->mVelocity.x = 0;//-((trans->mTransform.left) - ((tileColliding.x + 1)*tileMap->getTileSize()));
+					move->mVelocity.x = -((trans->mTransform.left) - ((tileColliding.x + 1)*tileMap->getTileSize()));
 			}
 			tileColliding = getTileCollidingOnY(trans->mTransform, move->mVelocity.y);
 			if (tileColliding.y != 0)
 			{
-				move->mDirection = Direction::STATIC;
+				handleCollisionWithTile(&entity);
 				if (move->mVelocity.y > 0)
-					move->mVelocity.y = 0;//(tileColliding.y*tileMap->getTileSize()) - (trans->mTransform.top + trans->mTransform.height + 1);
+					move->mVelocity.y = (tileColliding.y*tileMap->getTileSize()) - (trans->mTransform.top + trans->mTransform.height + 1);
 				else if (move->mVelocity.y < 0)
-					move->mVelocity.y = 0;//-((trans->mTransform.top) - ((tileColliding.y + 1)*tileMap->getTileSize()));
+					move->mVelocity.y = -((trans->mTransform.top) - ((tileColliding.y + 1)*tileMap->getTileSize()));
 			}
-			if (collisionHappend)
+			if (collisionHappend && !entity.isDeleted())
 			{
-				if (&entity && targetOnX)
-				{
-					if (entity.getTag() == GameTag::BULLET && targetOnX->getTag() == GameTag::ENEMY)
-					{
-						targetOnX->deleted();
-					}
-				}
-				if (&entity && targetOnY)
-				{
-					if (entity.getTag() == GameTag::BULLET && targetOnY->getTag() == GameTag::ENEMY)
-					{
-						//playState->incrementScore(1);
-						targetOnY->deleted();
-					}
-				}
+				if (targetOnX && !targetOnX->isDeleted())
+					handleCollisionWithEntity(&entity, targetOnX, gameData);
+				if (targetOnY && !targetOnY->isDeleted())
+					handleCollisionWithEntity(&entity, targetOnY, gameData);
 			}
 		}
 	}
@@ -263,6 +252,57 @@ float CollisionSystem::getVerticalDistanceBetweenEntities(Entity * source, Entit
 		return -(sourceTransform.top - (targetTransform.top + targetTransform.height));
 
 	return 0.0f;
+}
+
+void CollisionSystem::handleCollisionWithTile(Entity * entity)
+{
+	if (entity->getTag() == GameTag::BULLET)
+	{
+		entity->deleted();
+		soundData->playSound("shot.wav");
+	}
+		
+}
+
+void CollisionSystem::handleCollisionWithEntity(Entity * source, Entity * target, GameData &gameData)
+{
+	GameTag targetTag = target->getTag();
+	GameTag sourceTag = source->getTag();
+	if (sourceTag == GameTag::BULLET)
+	{
+		if (targetTag == GameTag::ENEMY || targetTag == GameTag::PLAYER)
+		{
+			source->deleted();
+			HealthComponent* targetHealth = target->getComponent<HealthComponent>();
+			if (!targetHealth->getInvulnerable())
+			{
+				targetHealth->setInvulnerable(true);
+				targetHealth->setHealth(targetHealth->getHealth() - 1);
+				soundData->playSound("shot.wav");
+				if (targetTag == GameTag::PLAYER)
+					gameData.setHealth(gameData.getHealth() - 1);
+				if (targetHealth->getHealth() <= 0 )
+				{
+					if (targetTag == GameTag::ENEMY)
+						gameData.changeScore(100);
+
+					target->deleted();
+					soundData->playSound("death.ogg");
+				}
+			}
+						
+		}
+	}
+	if (sourceTag == GameTag::PLAYER)
+	{
+		if (targetTag == GameTag::PICKUP)
+		{
+			target->deleted();
+			gameData.changeScore(200);
+			gameData.setCoinsCollected(gameData.getCoinsCollected() + 1);
+			soundData->playSound("coin.wav");
+		}
+	}
 }
 
 void CollisionSystem::displayRect(sf::FloatRect rect)

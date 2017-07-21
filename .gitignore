@@ -270,3 +270,9 @@ ModelManifest.xml
 /November Game/ltbl/Math.h
 /November Game/ltbl/Quadtree.cpp
 /November Game/dpcomic.ttf
+/November Game/Audio/coin.wav
+/November Game/Audio/death.ogg
+*.wav
+/November Game/Audio/music.ogg
+/November Game/font/dpcomic.ttf
+/November Game/openal32.dll

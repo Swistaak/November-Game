@@ -8,18 +8,11 @@ Game::Game()
 void Game::run()
 {
 	sf::Clock clock;
-	while (true)
+	while (isPlaying && window.isOpen())
 	{
-		
-		float currenttime = clock.restart().asSeconds();
-		float fps = 1.f / currenttime;
-		system("cls");
-		std::cout << "fps : " << fps << std::endl;
-		
 		handleEvents();
 		update();
 		draw();
-		
 	}
 }
 
@@ -61,10 +54,16 @@ void Game::collectGarbage()
 {
 	for (int i = 0; i < entities.size(); i++)
 	{
-		if (entities[i].getDeleted())
+		if (entities[i].isDeleted())
 		{
-			entities[i] = std::move(entities.back());
-			entities.pop_back();
+			if (entities[i].getTag() == GameTag::PLAYER)
+				gameOver();
+			else
+			{
+				entities[i] = std::move(entities.back());
+				entities.pop_back();
+			}
+
 		}
 	}
 }
@@ -76,11 +75,8 @@ void Game::update()
 
 void Game::draw()
 {
-	window.setView(mainView);
 	window.clear();
-
 	states.back()->draw(this);
-
 	window.display();
 }
 
@@ -104,13 +100,28 @@ void Game::init()
 {
 
 
-	window.create(sf::VideoMode(1024, 800), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
+	window.create(sf::VideoMode(windowWidth, windowHeight), "November Game", sf::Style::None | sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
-	mainView.setSize(1024, 800);
+	window.setMouseCursorVisible(false);
 	mainView.zoom(zoomRate);
-	mainView.setCenter(400*zoomRate, 300*zoomRate);
+	mainView.setSize(windowWidth, windowHeight * 0.8f);
+	mainView.setCenter((windowWidth / 2.0f)*zoomRate, (windowHeight*0.8f / 2.0f)*zoomRate);
+	mainView.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 0.8f));
 	window.setView(mainView);
+	guiView.setSize(windowWidth, windowHeight * 0.2f);
+	guiView.setViewport(sf::FloatRect(0.0f, 0.8f, 1.0f, 0.2f));
+	changeState(MenuState::instance());
+}
 
-	changeState(PlayState::instance());
+void Game::gameOver()
+{
+	this->changeState(GameOver::instance());
+	resetViewCenter();
+	window.setView(mainView);
+}
+
+void Game::resetViewCenter()
+{
+	mainView.setCenter((windowWidth / 2.0f)*zoomRate, (windowHeight*0.8f / 2.0f)*zoomRate);
 }
 

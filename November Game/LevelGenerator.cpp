@@ -12,20 +12,27 @@ namespace LevelGenerator
 		saveLevelToFile(outputFile);
 	}
 
+	int LevelGenerator::getCoinsCount()
+	{
+		return coinsCount;
+	}
+
 	void LevelGenerator::generateLevel(int width, int height)
 	{
-		roomGenerator.generateRooms(width, height, 5000);
+		roomGenerator.generateRooms(width, height, 2000);
 		roomGenerator.insertRoomsIntoTilemap(tileMap);
 		mazeGenerator.generateMaze(tileMap);
 		mazeGenerator.createConnectors(tileMap, roomGenerator.rooms);
 		mazeGenerator.removeDeadEnds(tileMap);
+		roomGenerator.removeRoomsWithoutConnectors(tileMap);
 
 	}
 	void LevelGenerator::generateEntities()
 	{
-		entityGenerator.generateEntities(tileMap,roomGenerator.rooms);
 		entityGenerator.generatePlayer(tileMap, roomGenerator.rooms);
+		entityGenerator.generateEntities(tileMap,roomGenerator.rooms);
 		entityGenerator.generateEnemy(tileMap, roomGenerator.rooms);
+		coinsCount = entityGenerator.getCoinsCount();
 	}
 	void LevelGenerator::saveLevelToFile(std::string outputFileName)
 	{
@@ -37,6 +44,11 @@ namespace LevelGenerator
 			{
 				sf::Color color(tileMap.tiles[x][y].tile.tileType,0, tileMap.tiles[x][y].tile.tileType * 64);
 				sf::Color colorWithEntity(tileMap.tiles[x][y].tile.tileType, tileMap.tiles[x][y].entity, tileMap.tiles[x][y].tile.tileType * 64);
+				if (tileMap.tiles[x][y].entity == static_cast<int>(GameTag::PLAYER))
+				{
+					colorWithEntity.b = 0;
+					std::cout << "Player spawn pos : " << 2 * x * 64 << "," << (2 * y + 1) * 64 << std::endl;
+				}
 
 				image.setPixel(2*x, 2*y, color);
 				image.setPixel(2*x, 2*y+1, colorWithEntity);

@@ -13,11 +13,13 @@ namespace LevelGenerator
 	public:
 		EntityGenerator();
 		void generateEntities(gTileMap &gTileMap, std::vector<Room> rooms);
-		void generatePlayer(gTileMap &gTileMap, std::vector<Room> rooms);
+		void generatePlayer(gTileMap &gTileMap, std::vector<Room> &rooms);
 		void generateEnemy(gTileMap &gTileMap, std::vector<Room> rooms);
+		int getCoinsCount();
 	private:
 		std::random_device rd;
 		bool generatedPlayer = false;
+		int coinsCount = 0;
 	};
 }
 

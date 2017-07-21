@@ -5,10 +5,10 @@
 class AttackComponent : public Component
 {
 public:
-	AttackComponent() { ;;; }
+	AttackComponent() { ; }
+
 	bool mShot = false;
 	Direction mAttackDirection;
-	float mDamage;
 	sf::Clock attackClock;
 	float attackDelay = 500;
 	float attackCounter = 0;

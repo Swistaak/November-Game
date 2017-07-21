@@ -6,12 +6,14 @@
 class MoveComponent : public Component
 {
 public:
-	MoveComponent(sf::Vector2f velocity, float speed, Direction direction) : mVelocity{ velocity }, mSpeed{ speed }, mDirection{direction} {};
+	MoveComponent(sf::Vector2f velocity, float acceleration, Direction direction, float maxVelocity) : mVelocity{ velocity }, mAcceleration{ acceleration }, mDirection{ direction }, mMaxVelocity{ maxVelocity } {};
 
 	sf::Vector2f mVelocity{ 0,0 };
 	Direction mDirection = Direction::STATIC;
-	float mSpeed;
+	float mAcceleration;
+	float mMaxVelocity;
 	bool mMoving = false;
+	bool mChangedDirection = false;
 	std::list<sf::Vector2i> path;
 };
 

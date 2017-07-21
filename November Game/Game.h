@@ -8,8 +8,8 @@
 #include "CollisionSystem.h"
 #include "TextureManager.h"
 #include "EntityFactory.h"
-#include "GameState.h"
-#include "PlayState.h"
+#include "MenuState.h"
+#include "GameOver.h"
 #include <iostream>
 #include <vector>
 class Game
@@ -33,6 +33,7 @@ public:
 	CollisionSystem collisionSystem;
 	AiSystem aiSystem;
 	sf::View mainView;
+	sf::View guiView;
 	float zoomRate = 1.0f;
 private:
 
@@ -40,8 +41,13 @@ private:
 	void draw();
 	void handleEvents();
 	void init();
-	
+	void gameOver();
+	void resetViewCenter();
 	std::vector<GameState*> states;
 	bool pause = false;
+	bool isPlaying = true;
 	sf::Event event;
+	float windowWidth = 1920.0f;
+	float windowHeight = 1080.0f;
+
 };
